@@ -9,7 +9,7 @@ class Admin_Home extends Controller
         parent::__construct();
 
         if (! logged_in()) {
-            redirect('auth');
+            redirect('auth/login');
         }
     }
 

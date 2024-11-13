@@ -45,14 +45,34 @@ defined('PREVENT_DIRECT_ACCESS') or exit('No direct script access allowed');
 
 $router->get('/', 'Auth');
 $router->get('/home', 'User_Home');
-$router->get('/quiz/create', 'User_Quiz');
+// $router->get('/quiz/create', 'User_Quiz');
 $router->post('/quiz/create', 'User_Quiz::create');
 // $router->match('/quiz/create', 'User_Quiz::create', ['POST', 'GET']);
 $router->post('/submit-quiz', 'User_Quiz::submit');
+
+
+$router->get('/quiz/create', 'UserQuiz');
+$router->post('/quiz/api/save-quiz', 'UserQuiz::save_quiz');
+$router->get('/quiz/create/identification/{$quiz_id}', 'UserQuestion_Identification');
+$router->get('/quiz/create/identification/{$quiz_id}', 'UserQuestion_Identification');
+$router->post('/quiz/api/save-id-question', 'UserQuestion_Identification::save_id_question');
+
+
 $router->get('/question/create/{$quizId}', 'User_Question::create');
+
+
 $router->post('/question/add-id-question', 'User_Question::add_id_question');
 $router->post('/question/update-id-question', 'User_Question::update_id_question');
 $router->post('/question/delete-id-question', 'User_Question::delete_id_question');
+
+
+$router->post('/question/add-tf-question', 'User_Question::add_tf_question');
+$router->post('/question/update-tf-question', 'User_Question::update_tf_question');
+$router->post('/question/delete-tf-question', 'User_Question::delete_tf_question');
+
+
+
+
 $router->group('/auth', function () use ($router) {
     $router->match('/register', 'Auth::register', ['POST', 'GET']);
     $router->match('/login', 'Auth::login', ['POST', 'GET']);
