@@ -84,3 +84,16 @@ $router->group('/auth', function () use ($router) {
 
 
 $router->get('/admin/dashboard', 'Admin_Home::dashboard');
+$router->get('/admin/users', 'Admin_Home::users');
+
+$router->get('/admin/quizzes', 'Admin_Home::quizzes');
+// for approval quiz
+$router->match('/admin/quizzes/approve/{id}', 'Admin_Home::approveQuiz', ['POST', 'GET']);
+$router->match('/admin/quizzes/reject/{id}', 'Admin_Home::rejectQuiz', ['POST', 'GET']);
+// archive quiz
+$router->match('/admin/quizzes/archive/{id}', 'Admin_Home::archiveQuiz', ['POST', 'GET']);
+$router->match('/admin/quizzes/publish/{id}', 'Admin_Home::publishQuiz', ['POST', 'GET']);
+
+
+$router->get('/admin/leaderboards', 'Admin_Home::leaderboards');
+$router->get('/admin/settings', 'Admin_Home::settings');

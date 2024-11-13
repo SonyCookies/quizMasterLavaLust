@@ -15,7 +15,12 @@ class User_Home extends Controller
 
     public function index()
     {
-        $quizzes = $this->db->table('quizzes')->where('is_published', 1 )->get_all();
+        // binago ko ito
+        // $quizzes = $this->db->table('quizzes')->where('is_published', 1 )->where('is_archived', 0)->get_all();
+        $quizzes = $this->db->table('quizzes')->where([
+            'is_published' => 1,
+            'is_archived' => 0
+        ])->get_all();
 
         $this->call->view('/users/homepage', ['quizzes' => $quizzes]);
     }

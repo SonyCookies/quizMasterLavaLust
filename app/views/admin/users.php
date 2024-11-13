@@ -47,7 +47,7 @@ include APP_DIR . 'views/templates/header.php';
                         </svg>
                         Quizzes
                     </a>
-                    <a href="<?= site_url('admin/leaderboards'); ?>" class="flex items-center gap-2 rounded-lg px-3 py-2 text-gray-600 hover:bg-gray-100">
+                    <a href="<?= site_url('admin/leaderboard'); ?>" class="flex items-center gap-2 rounded-lg px-3 py-2 text-gray-600 hover:bg-gray-100">
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                         </svg>
@@ -137,54 +137,6 @@ include APP_DIR . 'views/templates/header.php';
                         <p class="mt-4 text-3xl font-bold">15,234</p>
                         <p class="text-orange-100">This week: 2,345</p>
                     </div>
-                </div>
-
-                <!-- Recent Users Table -->
-                <div class="overflow-x-auto rounded-lg border bg-white shadow-sm">
-                    <div class="border-b p-4">
-                        <h2 class="text-lg font-medium">Recent User Activity</h2>
-                    </div>
-                    <table class="w-full">
-                        <thead>
-                            <tr class="border-b bg-gray-50 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                <th class="px-6 py-3">Name</th>
-                                <th class="px-6 py-3">Email</th>
-                                <th class="px-6 py-3">Role</th>
-                                <th class="px-6 py-3">Joined</th>
-                                <th class="px-6 py-3">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200">
-                            <?php
-                            $users = [
-                                ['name' => 'John Smith', 'email' => 'john@example.com', 'role' => 'Student', 'joined' => '2024-02-15', 'status' => 'Active'],
-                                ['name' => 'Sarah Johnson', 'email' => 'sarah@example.com', 'role' => 'Teacher', 'joined' => '2024-02-14', 'status' => 'Active'],
-                                ['name' => 'Michael Brown', 'email' => 'michael@example.com', 'role' => 'Student', 'joined' => '2024-02-13', 'status' => 'Pending'],
-                                ['name' => 'Emily Davis', 'email' => 'emily@example.com', 'role' => 'Student', 'joined' => '2024-02-12', 'status' => 'Inactive'],
-                            ];
-
-                            foreach ($users as $user):
-                            ?>
-                                <tr>
-                                    <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900"><?php echo htmlspecialchars($user['name']); ?></td>
-                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500"><?php echo htmlspecialchars($user['email']); ?></td>
-                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500"><?php echo htmlspecialchars($user['role']); ?></td>
-                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500"><?php echo htmlspecialchars($user['joined']); ?></td>
-                                    <td class="whitespace-nowrap px-6 py-4 text-sm">
-                                        <?php
-                                        $statusClass = 'bg-green-100 text-green-600';
-                                        if ($user['status'] === 'Pending') {
-                                            $statusClass = 'bg-yellow-100 text-yellow-600';
-                                        } elseif ($user['status'] === 'Inactive') {
-                                            $statusClass = 'bg-red-100 text-red-600';
-                                        }
-                                        ?>
-                                        <span class="rounded-full <?php echo $statusClass; ?> px-2 py-1 text-xs font-medium"><?php echo htmlspecialchars($user['status']); ?></span>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </main>

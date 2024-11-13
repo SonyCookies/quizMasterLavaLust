@@ -4,8 +4,8 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>LavaLust UI</title>
-	<link rel="icon" type="image/png" href="<?= base_url(); ?>public/img/favicon.ico" />
+	<title>QuizMaster</title>
+	<link rel="icon" type="image/png" href="<?= base_url(); ?>public/img/QuizMaster.png" />
 	<!-- Fonts -->
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
 	<link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
@@ -16,9 +16,15 @@
 	<!-- FontAwesome -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
+	<!-- DataTables -->
+	<link href="https://cdn.datatables.net/v/dt/dt-2.1.8/datatables.min.css" rel="stylesheet">
+	<script src="https://cdn.datatables.net/v/dt/dt-2.1.8/datatables.min.js"></script>
 
 	<!-- Toastr CSS -->
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+	<!-- jQuery -->
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 	<!-- Toastr JS -->
