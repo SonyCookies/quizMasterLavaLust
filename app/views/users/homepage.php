@@ -34,13 +34,20 @@ include APP_DIR . 'views/templates/header.php';
               <p class="text-gray-500 text-center mt-2">Choose from the available quizzes and test your knowledge!</p>
 
               <!-- Dynamic List of quizzes with 'Take a Quiz' buttons -->
+               <!-- nilgyan ko ito ng if statement -->
               <ul class="mt-4 space-y-4">
-                <?php foreach ($quizzes as $quiz): ?>
-                  <li class="flex justify-between items-center bg-gray-100 rounded-lg p-4">
-                    <span class="text-gray-700"><?= htmlspecialchars($quiz['title']) ?></span>
-                    <a href="<?= site_url('take-quiz?quiz_id=' . $quiz['quiz_id']) ?>" class="text-green-600 border border-green-600 hover:bg-green-600 hover:text-white font-medium py-1 px-3 rounded text-sm">Take a Quiz</a>
+                <?php if (!empty($quizzes)): ?>
+                  <?php foreach ($quizzes as $quiz): ?>
+                    <li class="flex justify-between items-center bg-gray-100 rounded-lg p-4">
+                      <span class="text-gray-700"><?= htmlspecialchars($quiz['title']) ?></span>
+                      <a href="<?= site_url('take-quiz?quiz_id=' . $quiz['quiz_id']) ?>" class="text-green-600 border border-green-600 hover:bg-green-600 hover:text-white font-medium py-1 px-3 rounded text-sm">Take a Quiz</a>
+                    </li>
+                  <?php endforeach; ?>
+                <?php else: ?>
+                  <li class="flex justify-center items-center bg-gray-100 rounded-lg p-4">
+                    <span class="text-gray-700">No quiz available</span>
                   </li>
-                <?php endforeach; ?>
+                <?php endif; ?>
               </ul>
             </div>
           </div>

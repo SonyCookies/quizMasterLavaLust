@@ -19,8 +19,8 @@ class User_Quiz extends Controller
   }
   public function submit()
   {
-    $userId = $this->session->userdata('userId');
-
+    // binago ko itong sa parameter ng userdata
+    $userId = $this->session->userdata('user_id');
     print_r($userId);
     $title = $this->io->post('title');
     $quizType = $this->io->post('quizType');
