@@ -355,6 +355,8 @@ class Database {
             $x++;
         }
 
+        
+
         $this->sql = "INSERT INTO {$this->table} ({$keys}) VALUES ({$values})";
 
         return $this->exec();

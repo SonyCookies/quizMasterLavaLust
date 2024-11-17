@@ -45,33 +45,42 @@ defined('PREVENT_DIRECT_ACCESS') or exit('No direct script access allowed');
 
 $router->get('/', 'Auth');
 $router->get('/home', 'User_Home');
-// $router->get('/quiz/create', 'User_Quiz');
-$router->post('/quiz/create', 'User_Quiz::create');
-// $router->match('/quiz/create', 'User_Quiz::create', ['POST', 'GET']);
-$router->post('/submit-quiz', 'User_Quiz::submit');
 
+//USER PROFILE
+$router->get('/profile', 'UserProfile');
+$router->post('/profile/update', 'UserProfile::update_profile');
+//USER ACTIONS
+$router->get('/quiz/manage', 'UserManageQuizzes');
+$router->post('/quiz/update', 'UserManageQuizzes::update_quiz');
+$router->post('/quiz/toggle-publish', 'UserManageQuizzes::toggle_publish');
 
+//OPEN QUIZZES
+$router->get('/quizzes', 'UserQuizList');
+$router->get('/quizzes/filter', 'UserQuizList::filter_quizzes');
+$router->get('/api/quizzes', 'UserQuizList::get_quizzes');
+
+//CREATE QUIZ
 $router->get('/quiz/create', 'UserQuiz');
 $router->post('/quiz/api/save-quiz', 'UserQuiz::save_quiz');
-$router->get('/quiz/create/identification/{$quiz_id}', 'UserQuestion_Identification');
+
+//IDENTIFICATION CREATION
 $router->get('/quiz/create/identification/{$quiz_id}', 'UserQuestion_Identification');
 $router->post('/quiz/api/save-id-question', 'UserQuestion_Identification::save_id_question');
+$router->post('/quiz/api/delete-id-question', 'UserQuestion_Identification::delete_id_question');
+$router->post('/quiz/api/update-id-question', 'UserQuestion_Identification::update_id_question');
 
+//TRUE OR FALSE CREATION
+$router->get('/quiz/create/truefalse/{$quiz_id}', 'UserQuestion_TrueFalse');
+$router->post('/quiz/api/save-tf-question', 'UserQuestion_TrueFalse::save_tf_question');
+$router->post('/quiz/api/delete-tf-question', 'UserQuestion_TrueFalse::delete_tf_question');
+$router->post('/quiz/api/update-tf-question', 'UserQuestion_TrueFalse::update_tf_question');
 
-$router->get('/question/create/{$quizId}', 'User_Question::create');
-
-
-$router->post('/question/add-id-question', 'User_Question::add_id_question');
-$router->post('/question/update-id-question', 'User_Question::update_id_question');
-$router->post('/question/delete-id-question', 'User_Question::delete_id_question');
-
-
-$router->post('/question/add-tf-question', 'User_Question::add_tf_question');
-$router->post('/question/update-tf-question', 'User_Question::update_tf_question');
-$router->post('/question/delete-tf-question', 'User_Question::delete_tf_question');
-
-
-
+//MULTIPLE CHOICE CREATION
+$router->get('/quiz/create/multiplechoice/{$quiz_id}', 'UserQuestion_MultipleChoice');
+$router->post('/quiz/api/save-mc-question', 'UserQuestion_MultipleChoice::save_mc_question');
+$router->post('/quiz/api/delete-mc-question', 'UserQuestion_MultipleChoice::delete_mc_question');
+$router->post('/quiz/api/multiplechoice/choices', 'UserQuestion_MultipleChoice::get_choices_question');
+$router->post('/quiz/api/update-mc-question', 'UserQuestion_MultipleChoice::update_mc_question');
 
 $router->group('/auth', function () use ($router) {
     $router->match('/register', 'Auth::register', ['POST', 'GET']);
