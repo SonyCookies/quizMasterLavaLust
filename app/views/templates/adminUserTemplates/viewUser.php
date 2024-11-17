@@ -47,7 +47,7 @@ include APP_DIR . 'views/templates/header.php';
                         </svg>
                         Quizzes
                     </a>
-                    <a href="<?= site_url('admin/leaderboards'); ?>" class="flex items-center gap-2 rounded-lg px-3 py-2 text-gray-600 hover:bg-gray-100">
+                    <a href="<?= site_url('admin/leaderboard'); ?>" class="flex items-center gap-2 rounded-lg px-3 py-2 text-gray-600 hover:bg-gray-100">
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                         </svg>
@@ -98,36 +98,10 @@ include APP_DIR . 'views/templates/header.php';
 
             <!-- Dashboard Content -->
             <div class="p-4 md:p-6">
-                <div class="mb-8 grid grid-cols-4 gap-4">
-                    <!-- total -->
-                    <div class="col-span-2 flex justify-between rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 p-6 text-white shadow-md">
-                        <div class="flex items-center  justify-center gap-3 font-bold text-2xl">
-                            Total Users
-                        </div>
-
-                        <!-- users data -->
-                        <div class=" flex items-center">
-                            <p class="text-6xl font-bold"><?php echo $totalUser['active'] ?></p>
-                        </div>
-                    </div>
-
-                    <!-- approval -->
-                    <div class="col-span-2 flex justify-between rounded-lg bg-gradient-to-br from-orange-500 to-orange-600 p-6 text-white shadow-md">
-                        <div class="flex items-center justify-center gap-3 font-bold text-2xl">
-                            Deactivated Users
-                        </div>
-
-                        <!-- users data -->
-                        <div class=" flex items-center">
-                            <p class="text-6xl font-bold"><?php echo $totalDeactivatedUser['deactivated'] ?></p>
-                        </div>
-                    </div>
+                <div class="flex flex-col gap-6">
+                    <a href="<?= site_url('admin/users') ?>">Back</a>
+                    <?php echo $viewUser['username'] ?>
                 </div>
-                <!-- deactivated users -->
-                <?php include APP_DIR . 'views/templates/adminUserTemplates/deactivatedUser.php' ?>
-
-                <!-- all users -->
-                <?php include APP_DIR . 'views/templates/adminUserTemplates/allUser.php' ?>
             </div>
         </main>
     </div>

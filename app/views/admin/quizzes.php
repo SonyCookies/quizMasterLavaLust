@@ -47,7 +47,7 @@ include APP_DIR . 'views/templates/header.php';
                         </svg>
                         Quizzes
                     </a>
-                    <a href="<?= site_url('admin/leaderboard'); ?>" class="flex items-center gap-2 rounded-lg px-3 py-2 text-gray-600 hover:bg-gray-100">
+                    <a href="<?= site_url('admin/leaderboards'); ?>" class="flex items-center gap-2 rounded-lg px-3 py-2 text-gray-600 hover:bg-gray-100">
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                         </svg>
@@ -100,15 +100,9 @@ include APP_DIR . 'views/templates/header.php';
             <div class="p-4 md:p-6">
                 <div class="mb-8 grid gap-4 grid-cols-6">
                     <!-- total -->
-                    <div class="col-span-2 flex justify-between rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 p-6 text-white shadow-sm">
-                        <div class="flex flex-col justify-center gap-3 font-bold text-2xl">
+                    <div class="col-span-2 flex justify-between rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 p-6 text-white shadow-md">
+                        <div class="flex items-center  justify-center gap-3 font-bold text-2xl">
                             Total Quizzes
-                            <div class="flex">
-                                <button class="font-normal hover:shadow-md text-xs text-black px-4 py-2 rounded-lg bg-yellow-300">
-                                    Show all
-                                </button>
-                            </div>
-
                         </div>
 
                         <!-- users data -->
@@ -118,16 +112,9 @@ include APP_DIR . 'views/templates/header.php';
                     </div>
 
                     <!-- approval -->
-                    <div class="col-span-2 flex justify-between rounded-lg bg-gradient-to-br from-orange-500 to-orange-600 p-6 text-white shadow-sm">
-                        <div class="flex flex-col justify-center gap-3 font-bold text-2xl">
+                    <div class="col-span-2 flex justify-between rounded-lg bg-gradient-to-br from-orange-500 to-orange-600 p-6 text-white shadow-md">
+                        <div class="flex items-center justify-center gap-3 font-bold text-2xl">
                             Pending Quizzes
-                            <div class="flex">
-                                <button id="showApproval" class="font-normal hover:shadow-md text-xs text-black px-4 py-2 rounded-lg bg-yellow-300">
-                                    View pending
-                                </button>
-
-
-                            </div>
                         </div>
 
                         <!-- users data -->
@@ -137,15 +124,9 @@ include APP_DIR . 'views/templates/header.php';
                     </div>
 
                     <!-- archived -->
-                    <div class="col-span-2 flex justify-between rounded-lg bg-gradient-to-br from-green-500 to-green-600 p-6 text-white shadow-sm">
-                        <div class="flex flex-col justify-center gap-3 font-bold text-2xl">
+                    <div class="col-span-2 flex justify-between rounded-lg bg-gradient-to-br from-green-500 to-green-600 p-6 text-white shadow-md">
+                        <div class="flex items-center justify-center gap-3 font-bold text-2xl">
                             Archived Quizzes
-                            <div class="flex">
-                                <button id="showArchive" class="font-normal hover:shadow-md text-xs text-black px-4 py-2 rounded-lg bg-yellow-300">
-                                    View archive
-                                </button>
-                            </div>
-
                         </div>
 
                         <!-- users data -->
@@ -153,250 +134,75 @@ include APP_DIR . 'views/templates/header.php';
                             <p class="text-6xl font-bold"><?php echo $archivedQuizzes['archivedQuizzes'] ?></p>
                         </div>
                     </div>
-
                 </div>
 
-                <!-- approval -->
-                <div id="approval" class="hidden flex flex-col gap-2">
-                    <div class="flex items-center gap-3">
-                        <span class="font-bold text-2xl">Pending Quizzes</span>
-                        <button id="closeApproval" class="font-normal hover:shadow-md text-xs text-black px-4 py-2 rounded-lg bg-yellow-300">
-                            Hide
-                        </button>
-                    </div>
-                    <div class=" relative overflow-x-auto shadow-md sm:rounded-lg bg-white mb-8">
-                        <table id="quizApproval" class="w-full text-sm text-left rtl:text-right text-gray-500">
-                            <thead class="text-xs text-white uppercase bg-orange-500">
-                                <tr>
-                                    <th scope="col" class="px-6 py-3">
-                                        Quiz Title
-                                    </th>
-                                    <th scope="col" class="px-6 py-3">
-                                        Category
-                                    </th>
-                                    <th scope="col" class="px-6 py-3">
-                                        Difficulty
-                                    </th>
-                                    <th scope="col" class="px-6 py-3">
-                                        Type
-                                    </th>
-                                    <th scope="col" class="px-6 py-3">
-                                        Timed
-                                    </th>
-                                    <th scope="col" class="px-6 py-3">
-                                        Action
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if (!empty($forApprovalQuiz)): ?>
-                                    <?php foreach ($forApprovalQuiz as $quiz): ?>
-                                        <tr class="border-b">
-                                            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                                                <?php echo $quiz['title'] ?>
-                                            </th>
-                                            <td class="px-6 py-4">
-                                                <?php echo $quiz['category'] ?>
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                <?php echo $quiz['difficulty'] ?>
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                <?php echo $quiz['quizType'] ?>
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                <?php
-                                                if ($quiz['isTimed'] === 0) {
-                                                    echo 'No';
-                                                } else {
-                                                    echo 'Yes';
-                                                } ?>
-                                            </td>
-                                            <td class="px-6 py-4 space-x-2">
-                                                <a href="<?= site_url('admin/quizzes/reject/' . $quiz['quiz_id']) ?>" class="font-medium text-red-600 hover:text-red-700">Reject</a>
-                                                <a href="<?= site_url('admin/quizzes/approve/' . $quiz['quiz_id']) ?>" class="font-medium text-green-600 hover:text-green-700">Approve</a>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                <?php else: ?>
-                                    <tr>
-                                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">
-                                            No pending quizzes
-                                        </td>
-                                    </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="flex-items-center mb-8">
+                    <button type="button" id="openAddCategory" class="focus:outline-none bg-yellow-300 hover:bg-yellow-400 transition-all ease-in-out rounded-lg shadow-md px-6 py-2 text-center">
+                        Add Category
+                    </button>
                 </div>
+                <div class="flex justify-center gap-6">
+                    <!-- approval -->
+                    <div class="flex w-full items-start justify-center">
+                        <?php include APP_DIR . 'views/templates/adminQuizTemplates/pendingQuizTable.php'; ?>
 
-                <!-- archived quizzes -->
-                <div id="archive" class="hidden flex flex-col gap-2">
-                    <div class="flex items-center gap-3">
-                        <span class="font-bold text-2xl">Archived Quizzes</span>
-                        <button id="closeArchive" class="font-normal hover:shadow-md text-xs text-black px-4 py-2 rounded-lg bg-yellow-300">
-                            Hide
-                        </button>
                     </div>
-
-                    <div class=" relative overflow-x-auto shadow-md sm:rounded-lg bg-white mb-8">
-                        <table id="quizApproval" class="w-full text-sm text-left rtl:text-right text-gray-500">
-                            <thead class="text-xs text-white uppercase bg-green-500">
-                                <tr>
-                                    <th scope="col" class="px-6 py-3">
-                                        Quiz Title
-                                    </th>
-                                    <th scope="col" class="px-6 py-3">
-                                        Category
-                                    </th>
-                                    <th scope="col" class="px-6 py-3">
-                                        Difficulty
-                                    </th>
-                                    <th scope="col" class="px-6 py-3">
-                                        Type
-                                    </th>
-                                    <th scope="col" class="px-6 py-3">
-                                        Timed
-                                    </th>
-                                    <th scope="col" class="px-6 py-3">
-                                        Action
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if (!empty($forArchivedQuiz)): ?>
-                                    <?php foreach ($forArchivedQuiz as $quiz): ?>
-                                        <tr class="border-b">
-                                            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                                                <?php echo $quiz['title'] ?>
-                                            </th>
-                                            <td class="px-6 py-4">
-                                                <?php echo $quiz['category'] ?>
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                <?php echo $quiz['difficulty'] ?>
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                <?php echo $quiz['quizType'] ?>
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                <?php
-                                                if ($quiz['isTimed'] === 0) {
-                                                    echo 'No';
-                                                } else {
-                                                    echo 'Yes';
-                                                } ?>
-                                            </td>
-                                            <td class="px-6 py-4 space-x-2">
-                                                <a href="<?= site_url('admin/quizzes/publish/' . $quiz['quiz_id']) ?>" class="font-medium text-green-600 hover:text-green-700">Publish</a>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                <?php else: ?>
-                                    <tr>
-                                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">
-                                            No archived quizzes
-                                        </td>
-                                    </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
+                    <div class="flex w-full items-start justify-center">
+                        <?php include APP_DIR . 'views/templates/adminQuizTemplates/archivedQuizTable.php'; ?>
                     </div>
+                    <!-- archived quizzes -->
                 </div>
 
                 <!-- list of all quizzes -->
-                <div class="relative overflow-x-auto shadow-md sm:rounded-lg bg-white mb-8">
-                    <table id="quizApproval" class="w-full text-sm text-left rtl:text-right text-gray-500">
-                        <thead class="text-xs text-white uppercase bg-blue-500">
-                            <tr>
-                                <th scope="col" class="px-6 py-3">
-                                    Quiz Title
-                                </th>
-                                <th scope="col" class="px-6 py-3">
-                                    Category
-                                </th>
-                                <th scope="col" class="px-6 py-3">
-                                    Difficulty
-                                </th>
-                                <th scope="col" class="px-6 py-3">
-                                    Type
-                                </th>
-                                <th scope="col" class="px-6 py-3">
-                                    Timed
-                                </th>
-                                <th scope="col" class="px-6 py-3">
-                                    Action
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (!empty($allQuizzes)): ?>
-                                <?php foreach ($allQuizzes as $quiz): ?>
-                                    <tr class="border-b">
-                                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                                            <?php echo $quiz['title'] ?>
-                                        </th>
-                                        <td class="px-6 py-4">
-                                            <?php echo $quiz['category'] ?>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <?php echo $quiz['difficulty'] ?>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <?php echo $quiz['quizType'] ?>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <?php
-                                            if ($quiz['isTimed'] === 0) {
-                                                echo 'No';
-                                            } else {
-                                                echo 'Yes';
-                                            } ?>
-                                        </td>
-                                        <td class="px-6 py-4 space-x-2">
-                                            <a href="<?= site_url('admin/quizzes/archive/' . $quiz['quiz_id']) ?>" class="font-medium text-green-600 hover:text-green-700">Archive</a>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <tr>
-                                    <td colspan="6" class="px-6 py-4 text-center text-gray-500">
-                                        No quiz record
-                                    </td>
-                                </tr>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
-                </div>
+                <?php include APP_DIR . 'views/templates/adminQuizTemplates/allQuizTable.php'; ?>
             </div>
         </main>
     </div>
 
     </div>
 
+    <!-- add category modal -->
+    <div id="addCategory" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full bg-black bg-opacity-50">
+        <div class="relative p-4 w-full max-w-2xl h-full md:h-auto">
+            <!-- Modal content -->
+            <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
+                <!-- Modal header -->
+                <div class="flex justify-between items-center pb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                        Add Category
+                    </h3>
+                    <button id="closeAddCategory" type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                        <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"></path>
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <form action="<?= site_url('admin/quizzes/add-category') ?>"  method="post">
+                    <div class="flex flex-col gap-3">
+                        <div>
+                            <label for="category" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Category</label>
+                            <input type="text" name="category" id="category" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Enter category" required="">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
+                            <textarea id="description" name="description" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Write category description here"></textarea>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="flex items-center justify-center px-6 py-2 bg-blue-500 hover:bg-blue-600 rounded-lg mt-6 text-white">
+                        <svg class="mr-1 -ml-1 w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        Add new category
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script>
-        $(document).ready(function() {
-            // approval
-            $('#showApproval').click(function() {
-                $('#approval').removeClass('hidden')
-            })
-            $('#closeApproval').click(function() {
-                $('#approval').addClass('hidden')
-            })
-
-            // archive
-            $('#showArchive').click(function() {
-                $('#archive').removeClass('hidden')
-            })
-            $('#closeArchive').click(function() {
-                $('#archive').addClass('hidden')
-            })
-        })
-    </script>
-
-    <script>
-        let table = new DataTable('#quizApproval');
-
         // sidebar
         document.addEventListener('DOMContentLoaded', function() {
             const sidebar = document.getElementById('sidebar');
@@ -409,6 +215,34 @@ include APP_DIR . 'views/templates/header.php';
 
             closeSidebar.addEventListener('click', function() {
                 sidebar.classList.remove('open');
+            });
+        });
+
+        // add category
+        document.addEventListener("DOMContentLoaded", function() {
+            const modal = document.getElementById("addCategory");
+            const openModalButton = document.getElementById("openAddCategory");
+            const closeModalButton = document.getElementById("closeAddCategory");
+
+            function showModal() {
+                modal.classList.remove("hidden");
+                modal.classList.add("flex");
+            }
+
+            // Function to hide the modal
+            function hideModal() {
+                modal.classList.add("hidden");
+                modal.classList.remove("flex");
+            }
+
+            // Event listeners for the buttons
+            openModalButton.addEventListener("click", showModal);
+            closeModalButton.addEventListener("click", hideModal);
+
+            modal.addEventListener("click", function(event) {
+                if (event.target === modal) {
+                    hideModal();
+                }
             });
         });
     </script>

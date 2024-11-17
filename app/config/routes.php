@@ -93,8 +93,14 @@ $router->group('/auth', function () use ($router) {
 
 
 $router->get('/admin/dashboard', 'Admin_Home::dashboard');
-$router->get('/admin/users', 'Admin_Home::users');
 
+// users
+$router->get('/admin/users', 'Admin_Home::users');
+$router->get('/admin/users/{id}', 'Admin_Home::viewUser');
+$router->match('/admin/users/deactivate/{id}', 'Admin_Home::deactivateUser', ['POST', 'GET']);
+$router->match('/admin/users/activate/{id}', 'Admin_Home::activateUser', ['POST', 'GET']);
+
+// quiz
 $router->get('/admin/quizzes', 'Admin_Home::quizzes');
 // for approval quiz
 $router->match('/admin/quizzes/approve/{id}', 'Admin_Home::approveQuiz', ['POST', 'GET']);
@@ -102,6 +108,8 @@ $router->match('/admin/quizzes/reject/{id}', 'Admin_Home::rejectQuiz', ['POST', 
 // archive quiz
 $router->match('/admin/quizzes/archive/{id}', 'Admin_Home::archiveQuiz', ['POST', 'GET']);
 $router->match('/admin/quizzes/publish/{id}', 'Admin_Home::publishQuiz', ['POST', 'GET']);
+// add category
+$router->match('/admin/quizzes/add-category', 'Admin_Home::addCategory', ['POST', 'GET']);
 
 
 $router->get('/admin/leaderboards', 'Admin_Home::leaderboards');

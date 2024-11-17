@@ -25,8 +25,55 @@ class Admin_Home extends Controller
     // users
     public function users()
     {
-        $this->call->view('/admin/users');
+        $allUser = $this->db->table('users')->where(['is_admin' => 0, 'is_deactivated' => 0])->get_all();
+        $totalUser = $this->db->table('users')->select_count('is_deactivated', 'active')->where(['is_admin' => 0, 'is_deactivated' => 0])->get();
+
+        $deactivateUser = $this->db->table('users')->where(['is_admin' => 0, 'is_deactivated' => 1])->get_all();
+        $totalDeactivatedUser = $this->db->table('users')->select_count('is_deactivated', 'deactivated')->where(['is_admin' => 0, 'is_deactivated' => 1])->get();
+
+        $data = array(
+            'allUser' => $allUser,
+            'deactivateUser' => $deactivateUser,
+            'totalUser' => $totalUser,
+            'totalDeactivatedUser' => $totalDeactivatedUser
+        );
+
+        $this->call->view('/admin/users', $data);
     }
+    // view user
+    public function viewUser($id)
+    {
+        $viewUser = $this->db->table('users')->where('id', $id)->get();
+
+        $data = array(
+            'viewUser' => $viewUser,
+        );
+
+        $this->call->view('templates/adminUserTemplates/viewUser.php', $data);
+    }
+    // deactivate user
+    public function deactivateUser($id)
+    {
+        $deactivateUser = [
+            'is_deactivated' => 1
+        ];
+        $deactivateQuery = $this->db->table('users')->where('id', $id)->update($deactivateUser);
+        if ($deactivateQuery) {
+            redirect('admin/users');
+        }
+    }
+    // activate user
+    public function activateUser($id)
+    {
+        $activateUser = [
+            'is_deactivated' => 0
+        ];
+        $activateQuery = $this->db->table('users')->where('id', $id)->update($activateUser);
+        if ($activateQuery) {
+            redirect('admin/users');
+        }
+    }
+
 
     // quizzes
     public function quizzes()
@@ -68,6 +115,23 @@ class Admin_Home extends Controller
         );
 
         $this->call->view('/admin/quizzes', $data);
+    }
+    // add category
+    public function addCategory()
+    {
+        if ($this->form_validation->submitted()) {
+            $category = $this->io->post('category');
+            $description = $this->io->post('description');
+
+            $insertCategory = array(
+                'name' => $category,
+                'description' => $description
+            );
+
+            if ($this->db->table('categories')->insert($insertCategory)) {
+                redirect('admin/quizzes');
+            }
+        }
     }
     // reject quiz
     public function rejectQuiz($quiz_id)
