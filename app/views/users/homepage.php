@@ -2,62 +2,77 @@
 include APP_DIR . 'views/templates/header.php';
 ?>
 
-<body>
-  <div id="app" class="bg-gray-100 min-h-screen flex flex-col">
+<body class="bg-gradient-to-br from-quiz-blue to-quiz-light min-h-screen">
+  <div id="app" class="flex flex-col min-h-screen">
     <?php
     include APP_DIR . 'views/templates/nav.php';
     ?>
-    <main class="mt-5 pt-3 flex-grow">
-      <div class="container mx-auto px-4">
-        <!-- Dashboard Header -->
-        <div class="text-center mb-5">
-          <h2 class="text-4xl font-bold text-gray-800">Dashboard</h2>
-          <p class="text-gray-500">You are logged in!</p>
-        </div>
+    <main class="flex-grow container mx-auto px-4 py-8">
+      <!-- Dashboard Header -->
+      <div class="text-center mb-12">
+        <h2 class="text-5xl font-bold text-white mb-4">Welcome to QuizMaster</h2>
+        <p class="text-xl text-white/80">Your journey to knowledge begins here!</p>
+      </div>
 
+      <div class="grid md:grid-cols-2 gap-8">
         <!-- Make a Quiz Section -->
-        <div class="mb-4">
-          <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-            <div class="p-6 text-center">
-              <h3 class="text-2xl font-semibold text-gray-800">Make a Quiz</h3>
-              <p class="text-gray-500 mt-2">Create your own quiz by adding questions and answers for others to take!</p>
-              <a href="<?= site_url('quiz/create'); ?>" class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded w-full mt-4 inline-block">Start Creating</a>
+        <div class="bg-white/10 backdrop-filter backdrop-blur-lg rounded-xl overflow-hidden shadow-xl transform hover:scale-105 transition duration-300">
+          <div class="p-8 text-center">
+            <div class="w-20 h-20 bg-quiz-blue rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
             </div>
+            <h3 class="text-3xl font-semibold text-white mb-4">Create Your Quiz</h3>
+            <p class="text-white/80 mb-6">Craft your own quiz and challenge others with your knowledge!</p>
+            <a href="<?= site_url('quiz/create'); ?>" class="bg-white text-quiz-blue font-bold py-3 px-6 rounded-full inline-block hover:bg-quiz-light hover:text-white transition duration-300">Start Creating</a>
           </div>
         </div>
 
         <!-- List of Quizzes Section -->
-        <div>
-          <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-            <div class="p-6">
-              <h3 class="text-2xl font-semibold text-gray-800 text-center">List of Quizzes</h3>
-              <p class="text-gray-500 text-center mt-2">Choose from the available quizzes and test your knowledge!</p>
-
-              <!-- Dynamic List of quizzes with 'Take a Quiz' buttons -->
-               <!-- nilgyan ko ito ng if statement -->
-              <ul class="mt-4 space-y-4">
-                <?php if (!empty($quizzes)): ?>
-                  <?php foreach ($quizzes as $quiz): ?>
-                    <li class="flex justify-between items-center bg-gray-100 rounded-lg p-4">
-                      <span class="text-gray-700"><?= htmlspecialchars($quiz['title']) ?></span>
-                      <a href="<?= site_url('take-quiz?quiz_id=' . $quiz['quiz_id']) ?>" class="text-green-600 border border-green-600 hover:bg-green-600 hover:text-white font-medium py-1 px-3 rounded text-sm">Take a Quiz</a>
-                    </li>
-                  <?php endforeach; ?>
-                <?php else: ?>
-                  <li class="flex justify-center items-center bg-gray-100 rounded-lg p-4">
-                    <span class="text-gray-700">No quiz available</span>
-                  </li>
-                <?php endif; ?>
-              </ul>
-            </div>
+        <div class="bg-white/10 backdrop-filter backdrop-blur-lg rounded-xl overflow-hidden shadow-xl">
+          <div class="p-8">
+            <h3 class="text-3xl font-semibold text-white text-center mb-6">Available Quizzes</h3>
+            <ul class="space-y-4">
+              <?php foreach ($quizzes as $quiz): ?>
+                <li class="bg-white/20 rounded-lg p-4 flex justify-between items-center hover:bg-white/30 transition duration-300">
+                  <span class="text-white font-medium"><?= htmlspecialchars($quiz['title']) ?></span>
+                  <a href="<?= site_url('take-quiz?quiz_id=' . $quiz['quiz_id']) ?>" class="bg-quiz-blue text-white font-medium py-2 px-4 rounded-full hover:bg-white hover:text-quiz-blue transition duration-300">Take Quiz</a>
+                </li>
+              <?php endforeach; ?>
+            </ul>
           </div>
         </div>
+      </div>
 
+      <!-- Quick Stats Section -->
+      <div class="mt-12 bg-white/10 backdrop-filter backdrop-blur-lg rounded-xl overflow-hidden shadow-xl p-8">
+        <h3 class="text-3xl font-semibold text-white text-center mb-8">Your Quiz Journey</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="text-center">
+            <div class="text-4xl font-bold text-white mb-2">15</div>
+            <div class="text-white/80">Quizzes Taken</div>
+          </div>
+          <div class="text-center">
+            <div class="text-4xl font-bold text-white mb-2">3</div>
+            <div class="text-white/80">Quizzes Created</div>
+          </div>
+          <div class="text-center">
+            <div class="text-4xl font-bold text-white mb-2">89%</div>
+            <div class="text-white/80">Average Score</div>
+          </div>
+        </div>
       </div>
     </main>
+
+    <?php
+    include APP_DIR . 'views/templates/footer.php';
+    ?>
+
+
   </div>
 
-  <!-- Additional Scripts, if needed -->
+  <!-- Additional Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 </body>

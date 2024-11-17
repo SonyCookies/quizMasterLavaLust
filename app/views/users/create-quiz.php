@@ -2,27 +2,38 @@
 include APP_DIR . 'views/templates/header.php';
 ?>
 
-<body>
-  <div id="app" class="bg-gray-100 min-h-screen flex flex-col">
+<body class="bg-gradient-to-br from-quiz-blue to-quiz-light min-h-screen">
+  <div id="app" class="flex flex-col min-h-screen">
     <?php
     include APP_DIR . 'views/templates/nav.php';
     ?>
 
-  
-    <main class="mt-5 pt-3 flex-grow">
-      <div class="container mx-auto px-4">
-        <div class="text-center mb-5">
-          <h2 class="text-4xl font-bold text-gray-800">Create a Quiz</h2>
-        </div>
+    <main class="flex-grow container mx-auto px-4 py-8">
+      <div class="max-w-3xl mx-auto bg-white/10 backdrop-filter backdrop-blur-lg rounded-xl shadow-xl overflow-hidden">
+        <div class="p-8">
+          <h2 class="text-4xl font-bold text-white text-center mb-6">Create Your Quiz</h2>
 
-        <!-- Step-by-Step Quiz Creation Form -->
-        <form id="quizForm" action="/submit-quiz" method="POST" class="mx-auto" style="max-width: 600px;">
-          <!-- Step 1: Enter Quiz Title -->
-          <div id="step-1" class="step">
-            <h4 class="text-gray-800 mb-3">Enter the title of the quiz</h4>
-            <input type="text" name="title" class="w-full p-3 mb-3 border border-gray-300 rounded" placeholder="Quiz Title" required>
-            <button type="button" class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded w-full" onclick="nextStep()">Next</button>
-          </div>
+          <!-- Step-by-Step Quiz Creation Form -->
+          <form id="quizForm" class="space-y-6">
+            <!-- Progress Bar -->
+            <div class="relative pt-1 mb-6">
+              <div class="flex mb-2 items-center justify-between">
+                <div class="text-white">
+                  <span id="stepIndicator" class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full bg-white text-quiz-blue">
+                    Step <span id="currentStepNumber">1</span> of 3
+                  </span>
+                </div>
+              </div>
+              <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-white/30">
+                <div id="progressBar" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-white" style="width: 33%"></div>
+              </div>
+            </div>
+
+            <!-- Step 1: Enter Quiz Title -->
+            <div id="step-1" class="step">
+              <label for="quizTitle" class="block text-white text-lg font-medium mb-2">What's your quiz called?</label>
+              <input type="text" id="quizTitle" name="title" class="w-full p-3 bg-white/20 border border-white/30 rounded-lg text-white text-xl placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white" placeholder="Enter an engaging title" required>
+            </div>
 
           <!-- Step 2: Select Quiz Type, Difficulty, and Category -->
           <div id="step-2" class="step hidden">
@@ -46,148 +57,151 @@ include APP_DIR . 'views/templates/header.php';
             <h4 class="text-gray-800 mb-3">Select Category</h4>
             <select name="category" class="w-full p-3 mb-3 border border-gray-300 rounded" required>
               <option value="" disabled selected>Select category</option>
-              <option value="generalKnowledge-trivia">General Knowledge & Trivia</option>
-              <option value="science-technology">Science & Technology</option>
-              <option value="history-politics">History & Politics</option>
-              <option value="arts-culture">Arts & Culture</option>
-              <option value="sports-leisure">Sports & Leisure</option>
-              <option value="health-lifestyle">Health & Lifestyle</option>
-              <option value="nature-environment">Nature & Environment</option>
-              <option value="business-economics">Business & Economics</option>
-              <option value="philosphy-pscyhology">Philosophy & Psychology</option>
-              <option value="religion-mythodology">Religion & Mythodology</option>
-              <option value="mathematics-logic">Mathematics & Logic</option>
+              <option value="general-knowledge">General Knowledge</option>
+              <option value="science">Science</option>
+              <option value="history">History</option>
+              <option value="literature">Literature</option>
+              <option value="sports">Sports</option>
             </select>
-            
+
             <button type="button" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-medium py-2 px-4 rounded w-full mb-3" onclick="prevStep()">Back</button>
             <button type="button" class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded w-full" onclick="nextStep()">Next</button>
           </div>
 
 
-          <!-- Step 3: Quiz Settings -->
-          <div id="step-3" class="step hidden">
-            <h4 class="text-gray-800 mb-3">Quiz Settings</h4>
-            <div class="flex items-center mb-2">
-              <input type="checkbox" name="isTimed" value="1" class="mr-2" id="timedCheck">
-              <label for="timedCheck" class="text-gray-700">Is the quiz timed?</label>
+            <!-- Step 3: Quiz Settings -->
+            <div id="step-3" class="step hidden space-y-4">
+              <h4 class="text-white text-xl font-semibold mb-4">Fine-tune your quiz</h4>
+              <div class="flex items-center space-x-3 bg-white/20 p-4 rounded-lg">
+                <input type="checkbox" id="timedCheck" name="isTimed" value="1" class="form-checkbox h-5 w-5 text-quiz-blue rounded focus:ring-quiz-light">
+                <label for="timedCheck" class="text-white text-xl">Set a time limit for your quiz</label>
+              </div>
+              <!-- <div class="flex items-center space-x-3 bg-white/20 p-4 rounded-lg">
+                <input type="checkbox" id="showResultsCheck" name="showResults" value="1" class="form-checkbox h-5 w-5 text-quiz-blue rounded focus:ring-quiz-light" checked>
+                <label for="showResultsCheck" class="text-white">Show results immediately after submission</label>
+              </div>
+              <div class="flex items-center space-x-3 bg-white/20 p-4 rounded-lg">
+                <input type="checkbox" id="publishCheck" name="is_published" value="1" class="form-checkbox h-5 w-5 text-quiz-blue rounded focus:ring-quiz-light">
+                <label for="publishCheck" class="text-white">Publish quiz immediately</label>
+              </div> -->
             </div>
-            <div class="flex items-center mb-2">
-              <input type="checkbox" name="showResults" value="1" class="mr-2" id="showResultsCheck" checked>
-              <label for="showResultsCheck" class="text-gray-700">Show results after submission</label>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between mt-8">
+              <button type="button" id="prevBtn" class="bg-white/20 hover:bg-white/30 text-white font-bold py-2 px-6 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-white hidden">
+                Previous
+              </button>
+              <button type="button" id="nextBtn" class="bg-white text-quiz-blue font-bold py-2 px-6 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-white">
+                Next
+              </button>
+              <button type="submit" id="submitBtn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-white hidden">
+                Create Quiz
+              </button>
             </div>
-            <button type="button" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-medium py-2 px-4 rounded w-full mb-3" onclick="prevStep()">Back</button>
-            <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded w-full">Finish & Create Quiz</button>
-          </div>
-        </form>
-
-
+          </form>
+        </div>
       </div>
     </main>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
   <script>
     let currentStep = 1;
+    const totalSteps = 3;
 
-    // Move to the next step
+    function updateProgressBar() {
+      const progress = (currentStep / totalSteps) * 100;
+      $('#progressBar').css('width', `${progress}%`);
+      $('#currentStepNumber').text(currentStep);
+    }
+
     function nextStep() {
       if (validateStep()) {
-        if (currentStep === 3) {
-          saveQuizDetails(); // Save quiz details after the 3rd slide
-        } else {
-          document.getElementById(`step-${currentStep}`).classList.add('hidden');
+        if (currentStep < totalSteps) {
+          $(`#step-${currentStep}`).addClass('hidden');
           currentStep++;
-          document.getElementById(`step-${currentStep}`).classList.remove('hidden');
+          $(`#step-${currentStep}`).removeClass('hidden');
+          updateProgressBar();
+          $('#prevBtn').removeClass('hidden');
+          if (currentStep === totalSteps) {
+            $('#nextBtn').addClass('hidden');
+            $('#submitBtn').removeClass('hidden');
+          }
         }
       }
     }
 
     function prevStep() {
-      document.getElementById(`step-${currentStep}`).classList.add('hidden');
-      currentStep--;
-      document.getElementById(`step-${currentStep}`).classList.remove('hidden');
+      if (currentStep > 1) {
+        $(`#step-${currentStep}`).addClass('hidden');
+        currentStep--;
+        $(`#step-${currentStep}`).removeClass('hidden');
+        updateProgressBar();
+        if (currentStep === 1) {
+          $('#prevBtn').addClass('hidden');
+        }
+        $('#nextBtn').removeClass('hidden');
+        $('#submitBtn').addClass('hidden');
+      }
     }
 
-
-    // Validate inputs
     function validateStep() {
-      const inputs = document.querySelectorAll(`#step-${currentStep} input, #step-${currentStep} select`);
+      const inputs = $(`#step-${currentStep} input[required], #step-${currentStep} select[required]`);
       for (let input of inputs) {
-        if (!input.checkValidity()) {
-          input.reportValidity();
+        if (!$(input).val()) {
+          toastr.error('Please fill in all required fields.');
           return false;
         }
       }
       return true;
     }
 
-    // Save quiz details to the database
+    $('#quizForm').on('submit', function(e) {
+      e.preventDefault();
+      if (validateStep()) {
+        saveQuizDetails();
+      }
+    });
+
     function saveQuizDetails() {
-      const quizData = {
-        title: document.querySelector('input[name="title"]').value,
-        quizType: document.querySelector('select[name="quizType"]').value,
-        difficulty: document.querySelector('select[name="difficulty"]').value,
-        isTimed: document.querySelector('input[name="isTimed"]').checked ? 1 : 0,
-        showResults: document.querySelector('input[name="showResults"]').checked ? 1 : 0,
-        is_published: document.querySelector('input[name="is_published"]').checked ? 1 : 0
-      };
+      const formData = $('#quizForm').serialize();
+      $.post('/quiz/api/save-quiz', formData, function(response) {
+        const data = JSON.parse(response);
+        if (data.success) {
+          toastr.success('Quiz created successfully!');
 
-      console.log('Quiz Data:', quizData);
-
-      fetch('api/save-quiz', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(quizData)
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            // Redirect to add-question.php with the quizId as a URL parameter
-            window.location.href = `add-question.php?quizId=${data.quizId}`;
-          } else {
-            alert('Failed to save quiz. Please try again.');
+          switch (data.quiz_type) {
+            case "multiple-choice":
+              window.location.href = `/quiz/create/multiple-choice/${data.quiz_id}`;
+              break;
+            case "true-false":
+              window.location.href = `/quiz/create/true-false/${data.quiz_id}`;
+              break;
+            case "identification":
+              window.location.href = `/quiz/create/identification/${data.quiz_id}`;
+              break;
+            default:
+              window.location.href = `/quiz/create/default/${data.quiz_id}`;
+              break;
           }
-        })
-        .catch(error => {
-          console.error('Error saving quiz:', error);
-        });
+
+        } else {
+          toastr.error('Failed to save quiz. Please try again.');
+        }
+      }).fail(function() {
+        toastr.error('An error occurred. Please try again.');
+      });
     }
 
-    // Show question creation section after saving the quiz
-    function showQuestionCreation(quizId) {
-      document.getElementById(`step-${currentStep}`).classList.add('hidden');
-      document.getElementById('question-creation-section').classList.remove('hidden');
-      document.getElementById('quizId').value = quizId; // Store quizId for later use in questions
-    }
-    <?php
-    $_lava = &lava_instance(); 
-    if ($_lava->session->flashdata('message')): ?>
-            // Show toastr notification if flashdata exists
-            toastr.options = {
-                "closeButton": true,
-                "debug": false,
-                "newestOnTop": true,
-                "progressBar": true,
-                "positionClass": "toast-top-right", // Position of the toast
-                "preventDuplicates": true,
-                "showDuration": "300", // Show animation duration
-                "hideDuration": "1000", // Hide animation duration
-                "timeOut": "5000", // Timeout before the toast disappears
-                "extendedTimeOut": "1000", // Time before closing if hovered
-                "showEasing": "swing",
-                "hideEasing": "linear",
-                "showMethod": "fadeIn", // Animation method
-                "hideMethod": "fadeOut" // Animation method
-            };
-            // Display the message from flashdata
-            toastr.success("<?php echo $_lava->session->flashdata('message'); ?>");
-        <?php endif; ?>
+    $(document).ready(function() {
+      $('#nextBtn').on('click', nextStep);
+      $('#prevBtn').on('click', prevStep);
+      updateProgressBar();
+    });
   </script>
-
 </body>
 
 </html>
