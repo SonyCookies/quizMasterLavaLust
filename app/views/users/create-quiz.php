@@ -2,7 +2,7 @@
 include APP_DIR . 'views/templates/header.php';
 ?>
 
-<body class="bg-gradient-to-br from-quiz-blue to-quiz-light min-h-screen">
+<body class="bg-gradient-to-br from-blue-900 to-blue-700 min-h-screen">
   <div id="app" class="flex flex-col min-h-screen">
     <?php
     include APP_DIR . 'views/templates/nav.php';
@@ -14,7 +14,7 @@ include APP_DIR . 'views/templates/header.php';
           <h2 class="text-4xl font-bold text-white text-center mb-6">Create Your Quiz</h2>
 
           <!-- Step-by-Step Quiz Creation Form -->
-          <form id="quizForm" class="space-y-6">
+          <form id="quizForm" action="/quiz/api/save-quiz" method="POST" class="space-y-6">
             <!-- Progress Bar -->
             <div class="relative pt-1 mb-6">
               <div class="flex mb-2 items-center justify-between">
@@ -35,55 +35,48 @@ include APP_DIR . 'views/templates/header.php';
               <input type="text" id="quizTitle" name="title" class="w-full p-3 bg-white/20 border border-white/30 rounded-lg text-white text-xl placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white" placeholder="Enter an engaging title" required>
             </div>
 
-          <!-- Step 2: Select Quiz Type, Difficulty, and Category -->
-          <div id="step-2" class="step hidden">
-            <h4 class="text-gray-800 mb-3">What type of quiz?</h4>
-            <select name="quizType" class="w-full p-3 mb-3 border border-gray-300 rounded" required>
-              <option value="" disabled selected>Select type</option>
-              <option value="multiple-choice">Multiple Choice</option>
-              <option value="identification">Identification</option>
-              <option value="true-false">True or False</option>
-            </select>
+            <!-- Step 2: Select Quiz Type, Difficulty, and Category -->
+            <div id="step-2" class="step hidden space-y-4">
+              <div>
+                <label for="quizType" class="block text-white text-lg font-medium mb-2">What type of quiz is this?</label>
+                <select id="quizType" name="quizType" class="w-full p-3 bg-white/20 border border-white/30 rounded-lg text-white text-xl focus:outline-none focus:ring-2 focus:ring-white" required>
+                  <option class="text-black" value="" disabled selected>Choose a quiz type</option>
+                  <option class="text-black" value="multiple-choice">Multiple Choice</option>
+                  <option class="text-black" value="identification">Identification</option>
+                  <option class="text-black" value="true-false">True or False</option>
+                </select>
+              </div>
 
-            <h4 class="text-gray-800 mb-3">Difficulty Level</h4>
-            <select name="difficulty" class="w-full p-3 mb-3 border border-gray-300 rounded" required>
-              <option value="" disabled selected>Select difficulty</option>
-              <option value="Easy">Easy</option>
-              <option value="Medium">Medium</option>
-              <option value="Hard">Hard</option>
-            </select>
+              <div>
+                <label for="category" class="block text-white text-lg font-medium mb-2">What's the main topic?</label>
+                <select id="category" name="category" class="w-full p-3 bg-white/20 border border-white/30 rounded-lg text-white text-xl focus:outline-none focus:ring-2 focus:ring-white" required>
+                  <option class="text-black" value="" disabled selected>Pick a category</option>
+                  <?php foreach ($categories as $category): ?>
+                    <option class="text-black" value="<?= htmlspecialchars($category['category_id']) ?>">
+                      <?= htmlspecialchars($category['name']) ?>
+                    </option>
+                  <?php endforeach; ?>
+                </select>
+              </div>
 
-            <!-- Category Selection -->
-            <h4 class="text-gray-800 mb-3">Select Category</h4>
-            <select name="category" class="w-full p-3 mb-3 border border-gray-300 rounded" required>
-              <option value="" disabled selected>Select category</option>
-              <option value="general-knowledge">General Knowledge</option>
-              <option value="science">Science</option>
-              <option value="history">History</option>
-              <option value="literature">Literature</option>
-              <option value="sports">Sports</option>
-            </select>
-
-            <button type="button" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-medium py-2 px-4 rounded w-full mb-3" onclick="prevStep()">Back</button>
-            <button type="button" class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded w-full" onclick="nextStep()">Next</button>
-          </div>
-
+            </div>
 
             <!-- Step 3: Quiz Settings -->
             <div id="step-3" class="step hidden space-y-4">
               <h4 class="text-white text-xl font-semibold mb-4">Fine-tune your quiz</h4>
               <div class="flex items-center space-x-3 bg-white/20 p-4 rounded-lg">
-                <input type="checkbox" id="timedCheck" name="isTimed" value="1" class="form-checkbox h-5 w-5 text-quiz-blue rounded focus:ring-quiz-light">
+                <input
+                  type="hidden"
+                  name="isTimed"
+                  value="0" />
+                <input
+                  type="checkbox"
+                  id="timedCheck"
+                  name="isTimed"
+                  value="1"
+                  class="form-checkbox h-5 w-5 text-quiz-blue rounded focus:ring-quiz-light" />
                 <label for="timedCheck" class="text-white text-xl">Set a time limit for your quiz</label>
               </div>
-              <!-- <div class="flex items-center space-x-3 bg-white/20 p-4 rounded-lg">
-                <input type="checkbox" id="showResultsCheck" name="showResults" value="1" class="form-checkbox h-5 w-5 text-quiz-blue rounded focus:ring-quiz-light" checked>
-                <label for="showResultsCheck" class="text-white">Show results immediately after submission</label>
-              </div>
-              <div class="flex items-center space-x-3 bg-white/20 p-4 rounded-lg">
-                <input type="checkbox" id="publishCheck" name="is_published" value="1" class="form-checkbox h-5 w-5 text-quiz-blue rounded focus:ring-quiz-light">
-                <label for="publishCheck" class="text-white">Publish quiz immediately</label>
-              </div> -->
             </div>
 
             <!-- Navigation Buttons -->
@@ -102,7 +95,12 @@ include APP_DIR . 'views/templates/header.php';
         </div>
       </div>
     </main>
+
+    <?php
+    include APP_DIR . 'views/templates/footer.php';
+    ?>
   </div>
+
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
@@ -158,44 +156,6 @@ include APP_DIR . 'views/templates/header.php';
       }
       return true;
     }
-
-    $('#quizForm').on('submit', function(e) {
-      e.preventDefault();
-      if (validateStep()) {
-        saveQuizDetails();
-      }
-    });
-
-    function saveQuizDetails() {
-      const formData = $('#quizForm').serialize();
-      $.post('/quiz/api/save-quiz', formData, function(response) {
-        const data = JSON.parse(response);
-        if (data.success) {
-          toastr.success('Quiz created successfully!');
-
-          switch (data.quiz_type) {
-            case "multiple-choice":
-              window.location.href = `/quiz/create/multiple-choice/${data.quiz_id}`;
-              break;
-            case "true-false":
-              window.location.href = `/quiz/create/true-false/${data.quiz_id}`;
-              break;
-            case "identification":
-              window.location.href = `/quiz/create/identification/${data.quiz_id}`;
-              break;
-            default:
-              window.location.href = `/quiz/create/default/${data.quiz_id}`;
-              break;
-          }
-
-        } else {
-          toastr.error('Failed to save quiz. Please try again.');
-        }
-      }).fail(function() {
-        toastr.error('An error occurred. Please try again.');
-      });
-    }
-
     $(document).ready(function() {
       $('#nextBtn').on('click', nextStep);
       $('#prevBtn').on('click', prevStep);

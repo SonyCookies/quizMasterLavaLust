@@ -2,7 +2,7 @@
 include APP_DIR . 'views/templates/header.php';
 ?>
 
-<body class="bg-gradient-to-br from-quiz-blue to-quiz-light min-h-screen">
+<body class="bg-gradient-to-br from-blue-900 to-blue-700 min-h-screen">
   <div id="app" class="flex flex-col min-h-screen">
     <?php
     include APP_DIR . 'views/templates/nav.php';
@@ -25,7 +25,7 @@ include APP_DIR . 'views/templates/header.php';
             </div>
             <h3 class="text-3xl font-semibold text-white mb-4">Create Your Quiz</h3>
             <p class="text-white/80 mb-6">Craft your own quiz and challenge others with your knowledge!</p>
-            <a href="<?= site_url('quiz/create'); ?>" class="bg-white text-quiz-blue font-bold py-3 px-6 rounded-full inline-block hover:bg-quiz-light hover:text-white transition duration-300">Start Creating</a>
+            <a href="<?= site_url('quiz/create'); ?>" class="bg-white text-quiz-blue font-bold py-3 px-6 rounded-full inline-block hover:bg-quiz-light hover:scale-105 transition duration-300">Start Creating</a>
           </div>
         </div>
 
