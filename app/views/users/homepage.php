@@ -50,19 +50,20 @@ include APP_DIR . 'views/templates/header.php';
         <h3 class="text-3xl font-semibold text-white text-center mb-8">Your Quiz Journey</h3>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div class="text-center">
-            <div class="text-4xl font-bold text-white mb-2">15</div>
+            <div class="text-4xl font-bold text-white mb-2"><?= $quizzesTakenCount ?></div>
             <div class="text-white/80">Quizzes Taken</div>
           </div>
           <div class="text-center">
-            <div class="text-4xl font-bold text-white mb-2">3</div>
+            <div class="text-4xl font-bold text-white mb-2"><?= $quizzesCreatedCount ?></div>
             <div class="text-white/80">Quizzes Created</div>
           </div>
           <div class="text-center">
-            <div class="text-4xl font-bold text-white mb-2">89%</div>
+            <div class="text-4xl font-bold text-white mb-2"><?= $averageScoreValue ?>%</div>
             <div class="text-white/80">Average Score</div>
           </div>
         </div>
       </div>
+
     </main>
 
     <?php
