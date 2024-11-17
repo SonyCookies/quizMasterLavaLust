@@ -46,13 +46,19 @@ include APP_DIR . 'views/templates/header.php';
             <h4 class="text-gray-800 mb-3">Select Category</h4>
             <select name="category" class="w-full p-3 mb-3 border border-gray-300 rounded" required>
               <option value="" disabled selected>Select category</option>
-              <option value="general-knowledge">General Knowledge</option>
-              <option value="science">Science</option>
-              <option value="history">History</option>
-              <option value="literature">Literature</option>
-              <option value="sports">Sports</option>
+              <option value="generalKnowledge-trivia">General Knowledge & Trivia</option>
+              <option value="science-technology">Science & Technology</option>
+              <option value="history-politics">History & Politics</option>
+              <option value="arts-culture">Arts & Culture</option>
+              <option value="sports-leisure">Sports & Leisure</option>
+              <option value="health-lifestyle">Health & Lifestyle</option>
+              <option value="nature-environment">Nature & Environment</option>
+              <option value="business-economics">Business & Economics</option>
+              <option value="philosphy-pscyhology">Philosophy & Psychology</option>
+              <option value="religion-mythodology">Religion & Mythodology</option>
+              <option value="mathematics-logic">Mathematics & Logic</option>
             </select>
-
+            
             <button type="button" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-medium py-2 px-4 rounded w-full mb-3" onclick="prevStep()">Back</button>
             <button type="button" class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded w-full" onclick="nextStep()">Next</button>
           </div>

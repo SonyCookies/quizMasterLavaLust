@@ -52,7 +52,9 @@ class Auth extends Controller
                 $userId = $data;  // Assuming $data is the user ID
 
                 // Fetch user details from the database
-                $user = $this->db->table('users')->where('id', $userId)->get();
+                $user = $this->db->table('users')->where(['id' => $userId, 'is_deactivated' => 0])->get(); //may idinagdag ako here
+                // dinagdag ko ito
+                $deactivatedUser = $this->db->table('users')->where(['id' => $userId, 'is_deactivated' => 1])->get();
 
                 if ($user) {
                     $this->session->set_userdata('userId', $userId);
@@ -63,6 +65,11 @@ class Auth extends Controller
                     } else {
                         redirect('home');
                     }
+
+                    // dinagdag ko ito
+                } else if ($deactivatedUser) {
+                    $this->session->set_flashdata(['err_message' => 'Account deactivated.']);
+                    redirect('auth/login');
                 } else {
                     // If the user record was not found for some reason, handle as an error
                     $this->session->set_flashdata(['err_message' => 'User record not found.']);
