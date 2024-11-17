@@ -15,101 +15,60 @@ class UserQuiz extends Controller
 
   public function index()
   {
-    $this->call->view('/users/create-quiz');
+    $quizzes = $this->db->table('quizzes as q')->left_join('categories as c', 'q.categoryId=c.category_id')->get_all();
+    $categories = $this->db->table('categories')->get_all();
+    
+
+    //get the count of question from questions table where it has a quiz id, can i use join?
+    $this->call->view('/users/create-quiz', ['categories' => $categories, 'quizzes' => $quizzes]);
   }
+
   public function save_quiz()
   {
     $userId = $this->session->userdata('userId');
-    if (!$userId) {
-      echo json_encode(['success' => false, 'message' => 'User ID not found in session']);
-      return;
-    }
-
     $title = $this->io->post('title');
     $quizType = $this->io->post('quizType');
-    $difficulty = $this->io->post('difficulty');
     $category = $this->io->post('category');
-    $isTimed = isset($_POST['isTimed']) ? 1 : 0;
+    print_r($this->io->post('isTimed'));
+
+    $isTimed = $this->io->post('isTimed') ? 1 : 0;
+
 
     $data = [
       'user_id'     => $userId,
       'title'       => $title,
       'quizType'    => $quizType,
-      'difficulty'  => $difficulty,
-      'category'    => $category,
+      'categoryId'  => $category,
       'isTimed'     => $isTimed,
-      'created_at'  => date('Y-m-d H:i:s'),
     ];
 
     $this->db->table('quizzes')->insert($data);
-    $quizId = $this->db->table('quizzes')
-      ->order_by('created_at', 'DESC')
-      ->limit(1)
-      ->get();
 
-    if ($quizId) {
-      echo json_encode([
-        'success' => true,
-        'message' => 'Quiz created successfully!',
-        'quiz_id' => $quizId['quiz_id'],
-        'quiz_type' => $quizId['quizType']
-      ]);
-    } else {
-      echo json_encode([
-        'success' => false,
-        'message' => 'Failed to create quiz. Please try again.'
-      ]);
+    $quiz_id = $this->db->last_id();
+    $quiz = $this->db->table('quizzes')
+      ->where('quiz_id', $quiz_id)->get();
+    $category = $this->db->table('categories')->where('category_id', $quiz['categoryId'])->get();
+
+    switch ($quizType) {
+      case "multiple-choice":
+        header("Location: /quiz/create/multiplechoice/{$quiz_id}");
+        exit;
+      case "identification":
+        header("Location: /quiz/create/identification/{$quiz_id}");
+        exit;
+      case "true-false":
+        header("Location: /quiz/create/truefalse/{$quiz_id}");
+
+        break;
     }
   }
-
 
   public function get_quizzes()
   {
-    $quizzes = $this->db->table('quizzes')->get_all();
 
-    if ($quizzes) {
-      echo json_encode($quizzes);
-    } else {
-      echo json_encode([]);
-    }
+    $quizzes = $this->db->table('quizzes as q')->left_join('categories as c', 'q.categoryId=c.category_id')->get_all();
+
+    header('Content-Type: application/json');
+    echo json_encode($quizzes);
   }
-
-  // public function save_quiz()
-  // {
-  //   $userId = $this->session->userdata('userId');
-
-  //   print_r($userId);
-  //   $title = $this->io->post('title');
-  //   $quizType = $this->io->post('quizType');
-  //   $difficulty = $this->io->post('difficulty');
-  //   $category = $this->io->post('category');
-  //   $isTimed = isset($_POST['isTimed']) ? 1 : 0;
-  //   $showResults = isset($_POST['showResults']) ? 1 : 0;
-
-
-  //   // Prepare data for database insertion
-  //   $bind = array(
-  //     'user_id'     => $userId,
-  //     'title'       => $title,
-  //     'quizType'    => $quizType,
-  //     'difficulty'  => $difficulty,
-  //     'category'    => $category,
-  //     'isTimed'     => $isTimed,
-  //     'showResults' => $showResults,
-  //     'created_at'  => date('Y-m-d H:i:s', time()), // Convert the timestamp to DATETIME format
-  //   );
-
-  //   // Insert into the database
-  //   $quizId = $this->db->table('quizzes')->insert($bind);
-
-  //   if ($quizId) {
-  //     // Success message
-  //     $this->session->set_flashdata('message', 'Quiz created successfully!');
-  //     redirect('question/create/' . $quizId);
-  //   } else {
-  //     // Error message
-  //     $this->session->set_flashdata('message', 'Failed to create quiz.');
-  //     redirect('quiz/create');
-  //   }
-  // }
 }

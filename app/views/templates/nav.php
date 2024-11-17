@@ -1,4 +1,4 @@
-<nav class="bg-gradient-to-r from-quiz-blue to-quiz-light shadow-lg">
+<nav class="bg-gradient-to-l from-quiz-900 to-blue-700 shadow-lg">
     <div class="container mx-auto px-4">
         <div class="flex items-center justify-between py-4">
             <!-- Brand -->
@@ -38,7 +38,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                                 </svg>
                             </button>
-                            <ul class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden group-hover:block">
+                            <ul class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden group-hover:block z-50">
                                 <li><a href="<?= site_url('profile'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a></li>
                                 <li><a href="<?= site_url('settings'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a></li>
                                 <li>
