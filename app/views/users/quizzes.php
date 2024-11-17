@@ -51,7 +51,7 @@ include APP_DIR . 'views/templates/header.php';
                   <span class="bg-quiz-blue text-white text-sm font-medium px-2.5 py-0.5 rounded-full"><?= htmlspecialchars($quiz['total_points']) ?> pts.</span>
                   <span class="text-white/60 text-sm"><?= htmlspecialchars($quiz['question_count']) ?> questions</span>
                 </div>
-                <a href="<?= site_url('take-quiz?quiz_id=' . ($quiz['quiz_id'])) ?>"
+                <a href="<?= site_url('quiz/take/' . $quiz['quizType'] . '/' . $quiz['quiz_id']) ?>"
                   class="bg-white text-quiz-blue font-bold py-2 px-4 rounded-full inline-block hover:bg-quiz-blue hover:shadow-lg hover:scale-105 transition duration-300 ease-in-out">
                   Take Quiz
                 </a>

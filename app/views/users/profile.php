@@ -1,6 +1,19 @@
 <?php
 include APP_DIR . 'views/templates/header.php';
+
+$labels = [];
+$scores = [];
+
+foreach ($chartData as $score) {
+  $labels[] = date('M j, Y', strtotime($score['date_taken']));
+  $scores[] = $score['percentage'];
+}
 ?>
+
+<script>
+  const labels = <?php echo json_encode($labels); ?>;
+  const scores = <?php echo json_encode($scores); ?>;
+</script>
 
 <style>
   .modal.fade .modal-dialog {
@@ -10,6 +23,12 @@ include APP_DIR . 'views/templates/header.php';
 
   .modal.show .modal-dialog {
     transform: translate(0, 0);
+  }
+
+  #performanceTrendsChart {
+    width: 100%;
+    height: 300px;
+    /* or a dynamic value */
   }
 </style>
 
@@ -128,50 +147,62 @@ include APP_DIR . 'views/templates/header.php';
           <div class="p-8">
             <h2 class="text-2xl font-semibold text-white mb-6">Your Quiz Performance</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Overall Statistics -->
               <div class="bg-white/20 rounded-lg p-6">
                 <h3 class="text-xl font-semibold text-white mb-4">Overall Statistics</h3>
                 <ul class="space-y-2">
                   <li class="flex justify-between items-center text-white">
                     <span>Quizzes Completed:</span>
-                    <span class="font-bold">42</span>
+                    <span class="font-bold"><?= $overallStatistics['quizzes_completed'] ?></span>
                   </li>
                   <li class="flex justify-between items-center text-white">
                     <span>Average Score:</span>
-                    <span class="font-bold">78%</span>
+                    <span class="font-bold"><?= number_format($overallStatistics['average_score'], 2) ?></span>
                   </li>
                   <li class="flex justify-between items-center text-white">
                     <span>Accuracy Rate:</span>
-                    <span class="font-bold">82%</span>
+                    <span class="font-bold"><?= number_format($overallStatistics['accuracy_rate'], 2) ?>%</span>
                   </li>
                   <li class="flex justify-between items-center text-white">
                     <span>Total Points:</span>
-                    <span class="font-bold">3,450</span>
+                    <span class="font-bold"><?= number_format($overallStatistics['total_points']) ?></span>
                   </li>
                 </ul>
               </div>
+
+              <!-- Recent Quiz Scores -->
               <div class="bg-white/20 rounded-lg p-6">
                 <h3 class="text-xl font-semibold text-white mb-4">Recent Quiz Scores</h3>
                 <ul class="space-y-2">
-                  <?php
-                  $recentScores = [
-                    ['name' => 'World Geography', 'score' => 90],
-                    ['name' => 'Science Trivia', 'score' => 85],
-                    ['name' => 'Math Challenge', 'score' => 75],
-                    ['name' => 'History Quiz', 'score' => 88],
-                  ];
-                  foreach ($recentScores as $score):
-                  ?>
-                    <li class="flex justify-between items-center text-white">
-                      <span><?= htmlspecialchars($score['name']) ?></span>
-                      <span class="font-bold"><?= $score['score'] ?>%</span>
-                    </li>
-                  <?php endforeach; ?>
+                  <?php if (!empty($recentScores)): ?>
+                    <?php foreach ($recentScores as $score): ?>
+                      <li class="flex justify-between items-center text-white">
+                        <span><?= htmlspecialchars($score['quiz_name']) ?></span>
+                        <span class="font-bold"><?= htmlspecialchars($score['percentage']) ?>%</span>
+                      </li>
+                    <?php endforeach; ?>
+                  <?php else: ?>
+                    <li class="text-white">No recent quiz scores available.</li>
+                  <?php endif; ?>
                 </ul>
-                <a href="#" class="mt-4 text-quiz-blue hover:text-white transition duration-300 inline-block">View All Scores</a>
+                <a href="<?= site_url('quiz/scores'); ?>" class="mt-4 text-quiz-blue hover:text-white transition duration-300 inline-block">View All Scores</a>
               </div>
+
+              <!-- Performance Trends Section -->
+              <div class="bg-white/20 rounded-lg p-6 col-span-2">
+                <h3 class="text-xl font-semibold text-white mb-4">Performance Trends</h3>
+                <p class="text-white mb-4">Here you can view how your performance has evolved over your recent quizzes.</p>
+                <div class="relative">
+                  <canvas id="performanceTrendsChart"></canvas>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
+
+
+
 
       </div>
     </main>
@@ -214,6 +245,88 @@ include APP_DIR . 'views/templates/header.php';
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+  <script>
+    var ctx = document.getElementById('performanceTrendsChart').getContext('2d');
+    var performanceTrendsChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Score (%)',
+          data: scores,
+          borderColor: 'rgba(255, 255, 255, 1)',
+          backgroundColor: 'rgba(59, 130, 246, 1)',
+          borderWidth: 3,
+          fill: true,
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Your Performance Trends Over Time',
+            color: '#ffffff',
+            font: {
+              size: 16,
+              weight: 'bold',
+            }
+          },
+          tooltip: {
+            mode: 'index',
+            intersect: false,
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            titleColor: '#ffffff',
+            bodyColor: '#ffffff',
+          },
+          legend: {
+            labels: {
+              color: 'white',
+            }
+          }
+        },
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: 'Date',
+              color: '#ffffff',
+              font: {
+                size: 12
+              }
+            },
+            grid: {
+              color: 'rgba(255, 255, 255, 0.2)',
+            },
+            ticks: {
+              color: '#ffffff'
+            }
+          },
+          y: {
+            title: {
+              display: true,
+              text: 'Score (%)',
+              color: '#ffffff',
+              font: {
+                size: 12
+              }
+            },
+            ticks: {
+              beginAtZero: true,
+              max: 100,
+              color: '#ffffff',
+            },
+            grid: {
+              color: 'rgba(255, 255, 255, 0.2)',
+            }
+          }
+        }
+      }
+    });
+  </script>
+
+
 
   <script>
     $(document).ready(function() {

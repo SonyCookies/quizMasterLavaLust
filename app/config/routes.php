@@ -82,6 +82,21 @@ $router->post('/quiz/api/delete-mc-question', 'UserQuestion_MultipleChoice::dele
 $router->post('/quiz/api/multiplechoice/choices', 'UserQuestion_MultipleChoice::get_choices_question');
 $router->post('/quiz/api/update-mc-question', 'UserQuestion_MultipleChoice::update_mc_question');
 
+//TAKE QUIZ
+$router->get('/quiz/take/multiple-choice/{$quiz_id}', 'UserTake_MC');
+$router->post('/quiz/submit/multiple-choice', 'UserTake_MC::submit_multiple_choice');
+
+$router->get('/quiz/take/identification/{$quiz_id}', 'UserTake_ID');
+$router->post('/quiz/submit/identification', 'UserTake_ID::submit_identification');
+
+$router->get('/quiz/take/true-false/{$quiz_id}', 'UserTake_TF');
+$router->post('/quiz/submit/true-false', 'UserTake_TF::submit_true_false');
+
+//QUIZ SCORES
+$router->get('/quiz/scores', 'UserProfile::quiz_scores');
+
+
+
 $router->group('/auth', function () use ($router) {
     $router->match('/register', 'Auth::register', ['POST', 'GET']);
     $router->match('/login', 'Auth::login', ['POST', 'GET']);

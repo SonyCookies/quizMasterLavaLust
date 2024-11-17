@@ -15,9 +15,35 @@ class UserProfile extends Controller
 
   public function index()
   {
+    $user_id = get_user_id();
     $user = $this->db->table('users')->select('id, username, email, created_at')->where('id', get_user_id())->get();
 
-    $this->call->view('/users/profile', ['user' => $user]);
+    $recentScores = $this->db->table('user_scores')
+      ->select('quizzes.title AS quiz_name, user_scores.percentage, user_scores.date_taken')  // Add date_taken here
+      ->join('quizzes', 'user_scores.quiz_id = quizzes.quiz_id')
+      ->where('user_scores.user_id', $user_id)
+      ->order_by('user_scores.date_taken', 'DESC')
+      ->limit(5)
+      ->get_all();
+
+    $chartData = $this->db->table('user_scores')
+      ->select('user_scores.percentage, user_scores.date_taken')  // Just the percentage and date_taken for chart
+      ->where('user_scores.user_id', $user_id)
+      ->order_by('user_scores.date_taken', 'ASC')  // Ensure data is ordered by date
+      ->get_all();
+
+
+    if (empty($recentScores)) {
+      $recentScores = [];
+    }
+
+    $overallStatistics = $this->db->table('user_scores')
+      ->select('COUNT(DISTINCT quiz_id) AS quizzes_completed, AVG(score) AS average_score, AVG(percentage) AS accuracy_rate, SUM(score) AS total_points')
+      ->where('user_id', $user_id)
+      ->get();
+
+
+    $this->call->view('/users/profile', ['user' => $user, 'recentScores' => $recentScores, 'overallStatistics' => $overallStatistics, 'chartData' => $chartData]);
   }
 
   public function update_profile()
@@ -47,5 +73,21 @@ class UserProfile extends Controller
     header("Location: /profile");
   }
 
+  public function quiz_scores()
+  {
+    $user_id = get_user_id();
 
+    $quizScores = $this->db->table('user_scores')
+      ->select('quizzes.title AS quiz_name, quizzes.quizType as quiz_type, quizzes.quiz_id, categories.name AS category_name, quizzes.created_at, user_scores.score, user_scores.time_taken, user_scores.percentage, user_scores.date_taken')
+      ->join('quizzes', 'user_scores.quiz_id = quizzes.quiz_id')
+      ->join('categories', 'quizzes.categoryId = categories.category_id')
+      ->where('user_scores.user_id', $user_id)
+      ->order_by('user_scores.date_taken', 'DESC')
+      ->get_all();
+
+
+
+
+    $this->call->view('/users/quiz-scores', ['quizScores' => $quizScores]);
+  }
 }

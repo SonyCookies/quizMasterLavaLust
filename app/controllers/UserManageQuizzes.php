@@ -21,7 +21,7 @@ class UserManageQuizzes extends Controller
       ->left_join('questions as qu', 'q.quiz_id = qu.quiz_id')
       ->select('q.*, c.category_id, c.name as category_name, COUNT(qu.question_id) as question_count, SUM(qu.points) as total_points')
       ->where('user_id', $user)
-      ->group_by('q.quiz_id') // Group by quiz ID to aggregate properly
+      ->group_by('q.quiz_id')
       ->get_all();
 
     $categories = $this->db->table('categories')->get_all();
