@@ -9,9 +9,6 @@
                     Category
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    Difficulty
-                </th>
-                <th scope="col" class="px-6 py-3">
                     Type
                 </th>
                 <th scope="col" class="px-6 py-3">
@@ -30,11 +27,9 @@
                             <?php echo $quiz['title'] ?>
                         </th>
                         <td class="px-6 py-4">
-                            <?php echo $quiz['category'] ?>
+                            <?php echo $quiz['name'] ?>
                         </td>
-                        <td class="px-6 py-4">
-                            <?php echo $quiz['difficulty'] ?>
-                        </td>
+                       
                         <td class="px-6 py-4">
                             <?php echo $quiz['quizType'] ?>
                         </td>

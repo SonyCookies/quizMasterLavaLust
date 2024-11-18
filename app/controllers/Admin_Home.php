@@ -78,13 +78,26 @@ class Admin_Home extends Controller
     // quizzes
     public function quizzes()
     {
-        $allQuizzes = $this->db->table('quizzes')->where('is_published', 1)->where('is_archived', 0)->get_all();
+        $allQuizzes = $this->db->table('quizzes as q')
+            // ->select('quizzes.title', 'categories.name', 'quizzes.quizType', 'quizzes.isTimed')
+            ->left_join('categories as c', 'q.categoryId = c.category_id')
+            ->where(['is_published' => 1, 'is_archived' => 0])
+            ->get_all();
         // OUTPUT: SELECT * FROM quizzes WHERE is_published = 1 && is_archived = 0
 
-        $forApprovalQuiz = $this->db->table('quizzes')->where('is_published', 0)->where('is_rejected', 0)->get_all();
+
+        $forApprovalQuiz = $this->db->table('quizzes as q')
+            ->left_join('categories as c', 'q.categoryId = c.category_id')
+            ->where('is_published', 0)
+            ->where('is_rejected', 0)
+            ->get_all();
+
         // OUTPUT: SELECT * FROM quizzes WHERE is_published = 0 && is_rejected = 0;
 
-        $forArchivedQuiz = $this->db->table('quizzes')->where('is_archived', 1)->get_all();
+        $forArchivedQuiz = $this->db->table('quizzes as q')
+            ->left_join('categories as c', 'q.categoryId = c.category_id')
+            ->where('is_archived', 1)
+            ->get_all();
         // OUTPUT: SELECT * FROM quizzes WHERE is_archived = 1;
 
         $totalQuizzes = $this->db->table('quizzes')
@@ -111,7 +124,7 @@ class Admin_Home extends Controller
             'forApprovalQuiz' => $forApprovalQuiz,
             'forArchivedQuiz' => $forArchivedQuiz,
             'allQuizzes' => $allQuizzes,
-            'archivedQuizzes' => $archivedQuizzes
+            'archivedQuizzes' => $archivedQuizzes,
         );
 
         $this->call->view('/admin/quizzes', $data);

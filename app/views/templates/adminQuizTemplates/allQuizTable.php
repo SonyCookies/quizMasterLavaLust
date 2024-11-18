@@ -1,5 +1,5 @@
-<div class="relative overflow-x-auto shadow-md sm:rounded-lg bg-white mb-8">
-    <table class="w-full text-sm text-left rtl:text-right text-gray-500">
+<div class="relative overflow-x-auto mb-8">
+    <table id="allQuizTable" class="w-full text-sm text-left rtl:text-right text-gray-500 ">
         <thead class="text-xs text-white uppercase bg-blue-500">
             <tr>
                 <th scope="col" class="px-6 py-3">
@@ -8,9 +8,7 @@
                 <th scope="col" class="px-6 py-3">
                     Category
                 </th>
-                <th scope="col" class="px-6 py-3">
-                    Difficulty
-                </th>
+                
                 <th scope="col" class="px-6 py-3">
                     Type
                 </th>
@@ -22,7 +20,7 @@
                 </th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="bg-white">
             <?php if (!empty($allQuizzes)): ?>
                 <?php foreach ($allQuizzes as $quiz): ?>
                     <tr class="border-b">
@@ -30,11 +28,9 @@
                             <?php echo $quiz['title'] ?>
                         </th>
                         <td class="px-6 py-4">
-                            <?php echo $quiz['category'] ?>
+                            <?php echo $quiz['name'] ?>
                         </td>
-                        <td class="px-6 py-4">
-                            <?php echo $quiz['difficulty'] ?>
-                        </td>
+                        
                         <td class="px-6 py-4">
                             <?php echo $quiz['quizType'] ?>
                         </td>
@@ -61,3 +57,7 @@
         </tbody>
     </table>
 </div>
+
+<script>
+    let table =new DataTable('#allQuizTable')
+</script>
