@@ -95,6 +95,14 @@ $router->post('/quiz/submit/true-false', 'UserTake_TF::submit_true_false');
 //QUIZ SCORES
 $router->get('/quiz/scores', 'UserProfile::quiz_scores');
 
+//LEADERBOARDS
+$router->get('/leaderboard', 'UserLeaderboards');
+$router->get('/leaderboards/filter', 'UserLeaderboards::filter_quizzes');
+$router->get('/leaderboards/full-points', 'UserLeaderboards::full_points');
+$router->get('/leaderboards/full-accuracy', 'UserLeaderboards::full_accuracy');
+$router->get('/leaderboards/full/{$quiz_id}', 'UserLeaderboards::quiz_leaderboard');
+
+
 
 
 $router->group('/auth', function () use ($router) {

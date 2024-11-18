@@ -33,10 +33,8 @@ class User_Home extends Controller
             ->select('AVG(percentage) AS average_score')
             ->where('user_id', $user_id)
             ->get();
-        $averageScore = $this->db->table('user_scores')
-            ->select('AVG(percentage) AS average_score')
-            ->where('user_id', $user_id)
-            ->get();
+
+        $averageScoreValue = ($averageScore['average_score'] === NULL) ? 0 : number_format($averageScore['average_score'], 2);
 
         $averageScoreValue = ($averageScore['average_score'] === NULL) ? 0 : number_format($averageScore['average_score'], 2);
         $quizzes = $this->db->table('quizzes')

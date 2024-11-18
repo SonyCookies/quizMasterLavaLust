@@ -53,8 +53,7 @@ class UserProfile extends Controller
       'accuracy_rate' => $accuracyRate,
       'total_points' => $totalPoints,
     ];
-
-
+    
     $this->call->view('/users/profile', ['user' => $user, 'recentScores' => $recentScores, 'overallStatistics' => $overallStatistics, 'chartData' => $chartData]);
   }
 

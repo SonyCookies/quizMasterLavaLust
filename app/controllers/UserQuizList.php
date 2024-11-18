@@ -18,8 +18,10 @@ class UserQuizList extends Controller
     $quizzes = $this->db->table('quizzes as q')
       ->left_join('categories as c', 'q.categoryId = c.category_id')
       ->left_join('questions as qu', 'q.quiz_id = qu.quiz_id')
-      ->select('q.*, c.name as category_name, COUNT(qu.question_id) as question_count, SUM(qu.points) as total_points')
-      ->group_by('q.quiz_id') // Group by quiz ID to aggregate properly
+      ->select('q.*, c.name as category_name, 
+          IFNULL(COUNT(qu.question_id), 0) as question_count, 
+          IFNULL(SUM(qu.points), 0) as total_points')
+      ->group_by('q.quiz_id')
       ->get_all();
 
     $categories = $this->db->table('categories')->get_all();
@@ -35,14 +37,16 @@ class UserQuizList extends Controller
     $query = $this->db->table('quizzes as q')
       ->left_join('categories as c', 'q.categoryId = c.category_id')
       ->left_join('questions as qu', 'q.quiz_id = qu.quiz_id')
-      ->select('q.*, c.name as category_name, COUNT(qu.question_id) as question_count, SUM(qu.points) as total_points');
+      ->select(
+        'q.*, c.name as category_name, 
+        IFNULL(COUNT(qu.question_id), 0) as question_count, 
+        IFNULL(SUM(qu.points), 0) as total_points'
+      );
 
-    // Apply category filter
     if ($category) {
       $query->where('q.categoryId', $category);
     }
 
-    // Apply quiz type filter
     if ($type) {
       $query->where('q.quizType', $type);
     }
