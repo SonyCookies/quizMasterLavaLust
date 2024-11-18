@@ -42,7 +42,18 @@ class UserProfile extends Controller
       ->where('user_id', $user_id)
       ->get();
 
+    $quizzesCompleted = $overallStatistics['quizzes_completed'] ?? 0;
+    $averageScore = ($overallStatistics['average_score'] === NULL) ? 0 : number_format($overallStatistics['average_score'], 2);
+    $accuracyRate = ($overallStatistics['accuracy_rate'] === NULL) ? 0 : number_format($overallStatistics['accuracy_rate'], 2);
+    $totalPoints = $overallStatistics['total_points'] ?? 0;
 
+    $overallStatistics = [
+      'quizzes_completed' => $quizzesCompleted,
+      'average_score' => $averageScore,
+      'accuracy_rate' => $accuracyRate,
+      'total_points' => $totalPoints,
+    ];
+    
     $this->call->view('/users/profile', ['user' => $user, 'recentScores' => $recentScores, 'overallStatistics' => $overallStatistics, 'chartData' => $chartData]);
   }
 
