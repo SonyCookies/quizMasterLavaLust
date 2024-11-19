@@ -28,6 +28,80 @@ class UserTake_ID extends Controller
     $this->call->view('/users/identification', ['questions' => $questions, 'quiz' => $quiz]);
   }
 
+  // public function submit_identification()
+  // {
+  //   $quiz_id = $this->io->post('quizId');
+  //   $quiz = $this->db->table('quizzes')->where('quiz_id', $quiz_id)->get();
+  //   $user_id = get_user_id();
+  //   $submitted_answers = $this->io->post();
+  //   unset($submitted_answers['quizId']);
+
+  //   $questions_with_answers = $this->db->table('questions')
+  //     ->select('question_id, question_text, correct_answer, points')
+  //     ->where('quiz_id', $quiz_id)
+  //     ->get_all();
+
+  //   $correct_answers_map = [];
+  //   $total_points = 0;
+
+  //   foreach ($questions_with_answers as $question) {
+  //     $correct_answers_map[$question['question_id']] = [
+  //       'question_text' => $question['question_text'],
+  //       'correct_answer' => $question['correct_answer'],
+  //       'points' => $question['points'],
+  //     ];
+  //     $total_points += $question['points'];
+  //   }
+
+  //   $score = 0;
+  //   $total_questions = count($correct_answers_map);
+  //   $result_details = [];
+
+  //   foreach ($submitted_answers as $question_id => $user_answer) {
+  //     $question_id = str_replace('question_', '', $question_id);
+
+  //     $is_correct = isset($correct_answers_map[$question_id]) && strtolower(trim($user_answer)) === strtolower(trim($correct_answers_map[$question_id]['correct_answer']));
+
+  //     $points = $is_correct ? $correct_answers_map[$question_id]['points'] : 0;
+  //     $score += $points;
+
+  //     $result_details[] = [
+  //       'question_id' => $question_id,
+  //       'question_text' => $correct_answers_map[$question_id]['question_text'],
+  //       'user_answer' => $user_answer,
+  //       'correct_answer' => $correct_answers_map[$question_id]['correct_answer'],
+  //       'points' => $correct_answers_map[$question_id]['points'],
+  //       'is_correct' => $is_correct,
+  //     ];
+  //   }
+
+  //   $percentage = $total_points > 0 ? ($score / $total_points) * 100 : 0;
+
+  //   // Save the score in the user_scores table
+  //   $time_taken = 0; // Replace this with actual time taken if you have a way to calculate it
+  //   $date_taken = date('Y-m-d H:i:s'); // Current timestamp
+
+  //   $this->db->table('user_scores')->insert([
+  //     'user_id' => $user_id,
+  //     'quiz_id' => $quiz_id,
+  //     'score' => $score,
+  //     'total_score' => $total_points,
+  //     'percentage' => round($percentage, 2),
+  //     'time_taken' => $time_taken,
+  //     'date_taken' => $date_taken,
+  //   ]);
+
+  //   $result = [
+  //     'score' => $score,
+  //     'total_questions' => $total_questions,
+  //     'total_points' => $total_points,
+  //     'percentage' => round($percentage, 2),
+  //     'result_details' => $result_details,
+  //   ];
+
+  //   $this->call->view('/users/result-page', ['result' => $result, 'result_details' => $result_details, 'quiz' => $quiz]);
+  // }
+
   public function submit_identification()
   {
     $quiz_id = $this->io->post('quizId');
@@ -77,19 +151,35 @@ class UserTake_ID extends Controller
 
     $percentage = $total_points > 0 ? ($score / $total_points) * 100 : 0;
 
-    // Save the score in the user_scores table
-    $time_taken = 0; // Replace this with actual time taken if you have a way to calculate it
-    $date_taken = date('Y-m-d H:i:s'); // Current timestamp
+    $time_taken = 0;
+    $date_taken = date('Y-m-d H:i:s');
 
     $this->db->table('user_scores')->insert([
       'user_id' => $user_id,
       'quiz_id' => $quiz_id,
       'score' => $score,
       'total_score' => $total_points,
-      'percentage' => round($percentage, 2), 
+      'percentage' => round($percentage, 2),
       'time_taken' => $time_taken,
       'date_taken' => $date_taken,
-  ]);
+    ]);
+
+    $ranking_date = date('Y-m-d H:i:s');
+
+    $data = [
+      'user_id' => $user_id,
+      'quiz_id' => $quiz_id,
+      'score' => $score,
+      'ranking_date' => $ranking_date,
+    ];
+
+    $this->db->raw("
+        INSERT INTO leaderboards (user_id, quiz_id, score, ranking_date)
+        VALUES (:user_id, :quiz_id, :score, :ranking_date)
+        ON DUPLICATE KEY UPDATE
+            score = GREATEST(score, VALUES(score))
+    ", $data);
+
 
     $result = [
       'score' => $score,
