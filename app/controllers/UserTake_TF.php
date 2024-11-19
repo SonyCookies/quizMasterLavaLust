@@ -90,6 +90,22 @@ class UserTake_TF extends Controller
       'date_taken' => $date_taken,
     ]);
 
+    $ranking_date = date('Y-m-d H:i:s');
+
+    $data = [
+      'user_id' => $user_id,
+      'quiz_id' => $quiz_id,
+      'score' => $score,
+      'ranking_date' => $ranking_date,
+    ];
+
+    $this->db->raw("
+        INSERT INTO leaderboards (user_id, quiz_id, score, ranking_date)
+        VALUES (:user_id, :quiz_id, :score, :ranking_date)
+        ON DUPLICATE KEY UPDATE
+            score = GREATEST(score, VALUES(score))
+    ", $data);
+
 
     $result = [
       'score' => $score,

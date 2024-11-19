@@ -15,7 +15,7 @@ class UserQuiz extends Controller
 
   public function index()
   {
-    $quizzes = $this->db->table('quizzes as q')->left_join('categories as c', 'q.categoryId=c.quiz_id')->get_all();
+    $quizzes = $this->db->table('quizzes as q')->left_join('categories as c', 'q.categoryId = c.category_id')->get_all();
     $categories = $this->db->table('categories')->get_all();
     
 

@@ -81,7 +81,6 @@ class UserTake_MC extends Controller
     $submitted_answers = $this->io->post();
     unset($submitted_answers['quizId']);
 
-    // Fetch questions along with correct answers
     $questions_with_answers = $this->db->table('questions')
       ->left_join('answer_options', 'questions.question_id = answer_options.question_id')
       ->select('questions.question_id, questions.question_text, questions.points, answer_options.option_text AS correct_answer, answer_options.is_correct')
@@ -92,10 +91,9 @@ class UserTake_MC extends Controller
     $correct_answers_map = [];
     $total_points = 0;
 
-    // Map the correct answers with points
     foreach ($questions_with_answers as $answer) {
       $correct_answers_map[$answer['question_id']] = [
-        'question_text' => $answer['question_text'], // Store question text
+        'question_text' => $answer['question_text'],
         'correct_answer' => $answer['correct_answer'],
         'points' => $answer['points'],
       ];
@@ -106,7 +104,6 @@ class UserTake_MC extends Controller
     $total_questions = count($correct_answers_map);
     $result_details = [];
 
-    // Compare submitted answers with the correct answers
     foreach ($submitted_answers as $question_id => $user_answer) {
       $question_id = str_replace('question_', '', $question_id);
 
@@ -115,10 +112,9 @@ class UserTake_MC extends Controller
       $points = $is_correct ? $correct_answers_map[$question_id]['points'] : 0;
       $score += $points;
 
-      // Add question_text to the result details
       $result_details[] = [
         'question_id' => $question_id,
-        'question_text' => $correct_answers_map[$question_id]['question_text'], // Include question text
+        'question_text' => $correct_answers_map[$question_id]['question_text'],
         'user_answer' => $user_answer,
         'correct_answer' => isset($correct_answers_map[$question_id]) ? $correct_answers_map[$question_id]['correct_answer'] : 'N/A',
         'points' => $correct_answers_map[$question_id]['points'],
@@ -126,22 +122,36 @@ class UserTake_MC extends Controller
       ];
     }
 
-    // Calculate percentage score
     $percentage = $total_points > 0 ? ($score / $total_points) * 100 : 0;
 
-    // Save the score in the user_scores table
-    $time_taken = 0; // Replace this with actual time taken if tracked
-    $date_taken = date('Y-m-d H:i:s'); // Current timestamp
+    $time_taken = 0;
+    $date_taken = date('Y-m-d H:i:s');
 
     $this->db->table('user_scores')->insert([
       'user_id' => $user_id,
       'quiz_id' => $quiz_id,
       'score' => $score,
       'total_score' => $total_points,
-      'percentage' => round($percentage, 2), 
+      'percentage' => round($percentage, 2),
       'time_taken' => $time_taken,
       'date_taken' => $date_taken,
-  ]);
+    ]);
+
+    $ranking_date = date('Y-m-d H:i:s');
+
+    $data = [
+      'user_id' => $user_id,
+      'quiz_id' => $quiz_id,
+      'score' => $score,
+      'ranking_date' => $ranking_date,
+    ];
+
+    $this->db->raw("
+          INSERT INTO leaderboards (user_id, quiz_id, score, ranking_date)
+          VALUES (:user_id, :quiz_id, :score, :ranking_date)
+          ON DUPLICATE KEY UPDATE
+              score = GREATEST(score, VALUES(score))
+      ", $data);
 
     $result = [
       'score' => $score,
@@ -151,7 +161,6 @@ class UserTake_MC extends Controller
       'result_details' => $result_details,
     ];
 
-    // Pass the result and result_details to the view
     $this->call->view('/users/result-page', ['result' => $result, 'result_details' => $result_details, 'quiz' => $quiz]);
   }
 }

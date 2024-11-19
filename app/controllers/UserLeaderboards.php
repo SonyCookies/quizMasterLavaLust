@@ -16,45 +16,83 @@ class UserLeaderboards extends Controller
   public function index()
   {
     $topPoints = $this->db->table('user_scores')
-      ->select('user_id, SUM(score) AS total_points')
-      ->group_by('user_id')
-      ->order_by('total_points', 'DESC')
-      ->limit(5)
+      ->select('user_id, quiz_id, MAX(score) AS highest_score')
+      ->group_by('user_id, quiz_id')
       ->get_all();
 
-    foreach ($topPoints as &$entry) {
-      $user = $this->db->table('users')
-        ->select('username')
-        ->where('id', $entry['user_id'])
-        ->get();
-      $entry['username'] = $user['username'] ?? 'Unknown';
+    $userTotalPoints = [];
+    foreach ($topPoints as $entry) {
+      if (!isset($userTotalPoints[$entry['user_id']])) {
+        $userTotalPoints[$entry['user_id']] = 0;
+      }
+      $userTotalPoints[$entry['user_id']] += $entry['highest_score'];
     }
 
-    $topAccuracy = $this->db->table('user_scores')
-      ->select('user_id, AVG(percentage) AS average_accuracy')
-      ->group_by('user_id')
-      ->order_by('average_accuracy', 'DESC')
-      ->limit(5)
-      ->get_all();
 
-    foreach ($topAccuracy as &$entry) {
+    foreach ($userTotalPoints as $userId => &$totalPoints) {
       $user = $this->db->table('users')
         ->select('username')
-        ->where('id', $entry['user_id'])
+        ->where('id', $userId)
+        ->get();
+      $totalPoints = [
+        'username' => $user['username'] ?? 'Unknown',
+        'total_points' => $totalPoints
+      ];
+    }
+
+
+    uasort($userTotalPoints, function ($a, $b) {
+      return $b['total_points'] - $a['total_points'];
+    });
+
+    $topUsers = array_slice($userTotalPoints, 0, 5);
+
+
+    $highestAccuracy = $this->db->table('user_scores')
+      ->select('user_id, quiz_id, MAX(percentage) AS highest_accuracy')
+      ->group_by('user_id, quiz_id')  
+      ->get_all();
+
+    $userTotalAccuracy = [];
+    foreach ($highestAccuracy as $entry) {
+      if (!isset($userTotalAccuracy[$entry['user_id']])) {
+        $userTotalAccuracy[$entry['user_id']] = [
+          'total_accuracy' => 0,
+          'quiz_count' => 0
+        ];
+      }
+      $userTotalAccuracy[$entry['user_id']]['total_accuracy'] += $entry['highest_accuracy'];
+      $userTotalAccuracy[$entry['user_id']]['quiz_count']++;
+    }
+
+    foreach ($userTotalAccuracy as &$entry) {
+      $entry['average_accuracy'] = $entry['quiz_count'] > 0 ? $entry['total_accuracy'] / $entry['quiz_count'] : 0;
+    }
+
+    uasort($userTotalAccuracy, function ($a, $b) {
+      return $b['average_accuracy'] - $a['average_accuracy'];
+    });
+
+    foreach ($userTotalAccuracy as $userId => &$entry) {
+      $user = $this->db->table('users')
+        ->select('username')
+        ->where('id', $userId)
         ->get();
       $entry['username'] = $user['username'] ?? 'Unknown';
     }
 
     $categories = $this->db->table('categories')->get_all();
 
+
     $quizzes = $this->db->table('quizzes as q')
       ->left_join('categories as c', 'q.categoryId = c.category_id')
       ->left_join('questions as qu', 'q.quiz_id = qu.quiz_id')
       ->select('q.quiz_id, q.title, q.quizType, c.name as category_name, 
-                    IFNULL(COUNT(qu.question_id), 0) as question_count, 
-                    IFNULL(SUM(qu.points), 0) as total_points')
+          IFNULL(COUNT(qu.question_id), 0) as question_count, 
+          IFNULL(SUM(qu.points), 0) as total_points')
       ->group_by('q.quiz_id')
       ->get_all();
+
 
     foreach ($quizzes as &$quiz) {
       $topScores = $this->db->table('user_scores as us')
@@ -68,11 +106,31 @@ class UserLeaderboards extends Controller
       $quiz['top_scores'] = $topScores;
     }
 
+
+    $weeklyRanking = $this->db->table('leaderboards')
+      ->select('user_id, SUM(score) AS weekly_points')
+      ->where('ranking_date', '>=', date('Y-m-d 00:00:00', strtotime('monday this week')))
+      ->where('ranking_date', '<=', date('Y-m-d 23:59:59', strtotime('sunday this week')))
+      ->group_by('user_id')
+      ->order_by('weekly_points', 'DESC')
+      ->limit(5)
+      ->get_all();
+
+    foreach ($weeklyRanking as &$entry) {
+      $user = $this->db->table('users')
+        ->select('username')
+        ->where('id', $entry['user_id'])
+        ->get();
+      $entry['username'] = $user['username'] ?? 'Unknown';
+    }
+
+
     $data = [
-      'topPoints' => $topPoints,
-      'topAccuracy' => $topAccuracy,
+      'topPoints' => $topUsers,
+      'weeklyRanking' => $weeklyRanking,
+      'topAccuracy' => array_slice($userTotalAccuracy, 0, 5),  // Top 5 users
       'categories' => $categories,
-      'quizzes' => $quizzes
+      'quizzes' => $quizzes,
     ];
 
     $this->call->view('/users/leaderboards', $data);
@@ -81,20 +139,49 @@ class UserLeaderboards extends Controller
 
   public function filter_quizzes()
   {
-    // Get the filter parameters
     $category = $this->io->get('category');
     $type = $this->io->get('type');
 
-    // Fetch the top 5 points leaderboard
     $topPoints = $this->db->table('user_scores')
-      ->select('user_id, SUM(score) AS total_points')
+      ->select('user_id, quiz_id, MAX(score) AS highest_score')
+      ->group_by('user_id, quiz_id')
+      ->get_all();
+
+    $userTotalPoints = [];
+    foreach ($topPoints as $entry) {
+      if (!isset($userTotalPoints[$entry['user_id']])) {
+        $userTotalPoints[$entry['user_id']] = 0;
+      }
+      $userTotalPoints[$entry['user_id']] += $entry['highest_score'];
+    }
+
+    foreach ($userTotalPoints as $userId => &$totalPoints) {
+      $user = $this->db->table('users')
+        ->select('username')
+        ->where('id', $userId)
+        ->get();
+      $totalPoints = [
+        'username' => $user['username'] ?? 'Unknown',
+        'total_points' => $totalPoints
+      ];
+    }
+
+    uasort($userTotalPoints, function ($a, $b) {
+      return $b['total_points'] - $a['total_points'];
+    });
+
+    $topUsers = array_slice($userTotalPoints, 0, 5);
+
+    $weeklyRanking = $this->db->table('leaderboards')
+      ->select('user_id, SUM(score) AS weekly_points')
+      ->where('ranking_date', '>=', date('Y-m-d 00:00:00', strtotime('monday this week')))
+      ->where('ranking_date', '<=', date('Y-m-d 23:59:59', strtotime('sunday this week')))
       ->group_by('user_id')
-      ->order_by('total_points', 'DESC')
+      ->order_by('weekly_points', 'DESC')
       ->limit(5)
       ->get_all();
 
-    // Add username to the topPoints
-    foreach ($topPoints as &$entry) {
+    foreach ($weeklyRanking as &$entry) {
       $user = $this->db->table('users')
         ->select('username')
         ->where('id', $entry['user_id'])
@@ -102,7 +189,6 @@ class UserLeaderboards extends Controller
       $entry['username'] = $user['username'] ?? 'Unknown';
     }
 
-    // Fetch the top 5 accuracy leaderboard
     $topAccuracy = $this->db->table('user_scores')
       ->select('user_id, AVG(percentage) AS average_accuracy')
       ->group_by('user_id')
@@ -110,7 +196,6 @@ class UserLeaderboards extends Controller
       ->limit(5)
       ->get_all();
 
-    // Add username to the topAccuracy
     foreach ($topAccuracy as &$entry) {
       $user = $this->db->table('users')
         ->select('username')
@@ -119,10 +204,8 @@ class UserLeaderboards extends Controller
       $entry['username'] = $user['username'] ?? 'Unknown';
     }
 
-    // Fetch all categories
     $categories = $this->db->table('categories')->get_all();
 
-    // Build the query for filtered quizzes
     $query = $this->db->table('quizzes as q')
       ->left_join('categories as c', 'q.categoryId = c.category_id')
       ->left_join('questions as qu', 'q.quiz_id = qu.quiz_id')
@@ -130,7 +213,6 @@ class UserLeaderboards extends Controller
                     IFNULL(COUNT(qu.question_id), 0) as question_count, 
                     IFNULL(SUM(qu.points), 0) as total_points');
 
-    // Apply category and type filters if provided
     if ($category) {
       $query->where('q.categoryId', $category);
     }
@@ -139,10 +221,8 @@ class UserLeaderboards extends Controller
       $query->where('q.quizType', $type);
     }
 
-    // Get filtered quizzes
     $quizzes = $query->group_by('q.quiz_id')->get_all();
 
-    // Attach the top 3 scores for each quiz
     foreach ($quizzes as &$quiz) {
       $topScores = $this->db->table('user_scores as us')
         ->left_join('users as u', 'us.user_id = u.id')
@@ -155,12 +235,12 @@ class UserLeaderboards extends Controller
       $quiz['top_scores'] = $topScores;
     }
 
-    // Pass all necessary data to the view
     $data = [
-      'topPoints' => $topPoints,
+      'topPoints' => $topUsers,
       'topAccuracy' => $topAccuracy,
       'categories' => $categories,
-      'quizzes' => $quizzes
+      'quizzes' => $quizzes,
+      'weeklyRanking' => $weeklyRanking
     ];
 
     $this->call->view('/users/leaderboards', $data);
@@ -168,49 +248,84 @@ class UserLeaderboards extends Controller
 
   public function full_points()
   {
-    $leaderboard = $this->db->table('user_scores')
-      ->select('user_id, SUM(score) AS total_points')
-      ->group_by('user_id')
-      ->order_by('total_points', 'DESC')
+    $highestScores = $this->db->table('user_scores')
+      ->select('user_id, quiz_id, MAX(score) AS highest_score')
+      ->group_by('user_id, quiz_id')
       ->get_all();
 
-    foreach ($leaderboard as &$entry) {
-      $user = $this->db->table('users')
-        ->select('username')
-        ->where('id', $entry['user_id'])
-        ->get();
-      $entry['username'] = $user['username'] ?? 'Unknown';
+    $userTotalPoints = [];
+    foreach ($highestScores as $entry) {
+      if (!isset($userTotalPoints[$entry['user_id']])) {
+        $userTotalPoints[$entry['user_id']] = 0;
+      }
+      $userTotalPoints[$entry['user_id']] += $entry['highest_score'];
     }
 
+    foreach ($userTotalPoints as $userId => &$totalPoints) {
+      $user = $this->db->table('users')
+        ->select('username')
+        ->where('id', $userId)
+        ->get();
+      $totalPoints = [
+        'username' => $user['username'] ?? 'Unknown',
+        'total_points' => $totalPoints
+      ];
+    }
+
+    uasort($userTotalPoints, function ($a, $b) {
+      return $b['total_points'] - $a['total_points'];
+    });
+
     $data = [
-      'leaderboard' => $leaderboard
+      'leaderboard' => array_slice($userTotalPoints, 0, 5)
     ];
 
     $this->call->view('/users/full-points-leaderboard', $data);
   }
 
+
   public function full_accuracy()
   {
-    $topAccuracy = $this->db->table('user_scores')
-      ->select('user_id, AVG(percentage) AS average_accuracy')
-      ->group_by('user_id')
-      ->order_by('average_accuracy', 'DESC')
+    $highestAccuracy = $this->db->table('user_scores')
+      ->select('user_id, quiz_id, MAX(percentage) AS highest_accuracy')
+      ->group_by('user_id, quiz_id')
       ->get_all();
 
-    foreach ($topAccuracy as &$entry) {
+    $userTotalAccuracy = [];
+    foreach ($highestAccuracy as $entry) {
+      if (!isset($userTotalAccuracy[$entry['user_id']])) {
+        $userTotalAccuracy[$entry['user_id']] = [
+          'total_accuracy' => 0,
+          'quiz_count' => 0
+        ];
+      }
+      $userTotalAccuracy[$entry['user_id']]['total_accuracy'] += $entry['highest_accuracy'];
+      $userTotalAccuracy[$entry['user_id']]['quiz_count']++;
+    }
+
+    foreach ($userTotalAccuracy as &$entry) {
+      $entry['average_accuracy'] = $entry['quiz_count'] > 0 ? $entry['total_accuracy'] / $entry['quiz_count'] : 0;
+    }
+
+    uasort($userTotalAccuracy, function ($a, $b) {
+      return $b['average_accuracy'] - $a['average_accuracy'];
+    });
+
+    foreach ($userTotalAccuracy as $userId => &$entry) {
       $user = $this->db->table('users')
         ->select('username')
-        ->where('id', $entry['user_id'])
+        ->where('id', $userId)
         ->get();
       $entry['username'] = $user['username'] ?? 'Unknown';
     }
 
     $data = [
-      'topAccuracy' => $topAccuracy
+      'topAccuracy' => array_slice($userTotalAccuracy, 0, 5)  // Get the top 5 users by average accuracy
     ];
 
     $this->call->view('/users/full-accuracy-leaderboard', $data);
   }
+
 
   public function quiz_leaderboard($quiz_id)
   {
