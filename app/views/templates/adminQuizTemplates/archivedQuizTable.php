@@ -1,4 +1,7 @@
 <div class=" relative overflow-x-auto shadow-md sm:rounded-lg bg-white mb-8 w-full">
+    <div class="border-b p-4">
+        <h2 class="text-lg font-medium">Archived Quizzes</h2>
+    </div>
     <table id="quizApproval" class="w-full text-sm text-left rtl:text-right text-gray-500">
         <thead class="text-xs text-white uppercase bg-green-500">
             <tr>
@@ -10,9 +13,6 @@
                 </th>
                 <th scope="col" class="px-6 py-3">
                     Type
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    Timed
                 </th>
                 <th scope="col" class="px-6 py-3">
                     Action
@@ -29,17 +29,9 @@
                         <td class="px-6 py-4">
                             <?php echo $quiz['name'] ?>
                         </td>
-                       
+
                         <td class="px-6 py-4">
                             <?php echo $quiz['quizType'] ?>
-                        </td>
-                        <td class="px-6 py-4">
-                            <?php
-                            if ($quiz['isTimed'] === 0) {
-                                echo 'No';
-                            } else {
-                                echo 'Yes';
-                            } ?>
                         </td>
                         <td class="px-6 py-4 space-x-2">
                             <a href="<?= site_url('admin/quizzes/publish/' . $quiz['quiz_id']) ?>" class="font-medium text-green-600 hover:text-green-700">Publish</a>

@@ -1,4 +1,7 @@
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg bg-white mb-8">
+    <div class="border-b p-4">
+        <h2 class="text-lg font-medium">Deactivated Users</h2>
+    </div>
     <table class="w-full text-sm text-left rtl:text-right text-gray-500">
         <thead class="text-xs text-white uppercase bg-blue-500">
             <tr>

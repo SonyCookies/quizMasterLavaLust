@@ -40,17 +40,6 @@ class Admin_Home extends Controller
 
         $this->call->view('/admin/users', $data);
     }
-    // view user
-    public function viewUser($id)
-    {
-        $viewUser = $this->db->table('users')->where('id', $id)->get();
-
-        $data = array(
-            'viewUser' => $viewUser,
-        );
-
-        $this->call->view('templates/adminUserTemplates/viewUser.php', $data);
-    }
     // deactivate user
     public function deactivateUser($id)
     {
@@ -197,7 +186,55 @@ class Admin_Home extends Controller
     // leaderboards
     public function leaderboards()
     {
-        $this->call->view('/admin/leaderboards');
+        $topPlayer = $this->db->table('users as u')
+            ->left_join('user_scores as us', 'u.id=us.user_id')
+            ->group_by('u.id')
+            ->select('u.username as name, SUM(us.score) as points')
+            ->where('u.is_deactivated', 0)
+            ->where('u.is_admin', 0)
+            ->order_by('points', 'DESC')
+            ->limit(1)
+            ->get();
+
+        $totalPointsPlayers = $this->db->table('users as u')
+            ->left_join('user_scores as us', 'u.id=us.user_id')
+            ->select('u.username as name, SUM(us.score) as points, AVG(us.percentage)  as accuracy')
+            ->where('u.is_deactivated', 0)
+            ->where('u.is_admin', 0)
+            ->group_by('u.id')
+            ->order_by('points', 'DESC')
+            ->get_all();
+
+        $topWeeklyPlayer = $this->db->table('users as u')
+            ->left_join('leaderboards as l', 'u.id=l.user_id')
+            ->group_by('u.id')
+            ->select('u.username as name, SUM(l.score) as points')
+            ->where('l.ranking_date', '>=', date('Y-m-d 00:00:00', strtotime('monday this week')))
+            ->where('l.ranking_date', '<=', date('Y-m-d 23:59:59', strtotime('sunday this week')))
+            ->where('u.is_deactivated', 0)
+            ->where('u.is_admin', 0)
+            ->order_by('points', 'DESC')
+            ->limit(1)
+            ->get();
+
+        $weeklyPlayers = $this->db->table('users as u')
+            ->left_join('leaderboards as l', 'u.id=l.user_id')
+            ->select('u.username as name, SUM(l.score) as points')
+            ->where('u.is_deactivated', 0)
+            ->where('u.is_admin', 0)
+            ->group_by('u.id')
+            ->order_by('points', 'DESC')
+            ->get_all();
+
+
+        $data = array(
+            'topPlayer' => $topPlayer,
+            'totalPointsPlayers' => $totalPointsPlayers,
+            'topWeeklyPlayer' => $topWeeklyPlayer,
+            'weeklyPlayers' => $weeklyPlayers
+        );
+
+        $this->call->view('/admin/leaderboards', $data);
     }
 
     // settings

@@ -119,7 +119,6 @@ $router->get('/admin/dashboard', 'Admin_Home::dashboard');
 
 // users
 $router->get('/admin/users', 'Admin_Home::users');
-$router->get('/admin/users/{id}', 'Admin_Home::viewUser');
 $router->match('/admin/users/deactivate/{id}', 'Admin_Home::deactivateUser', ['POST', 'GET']);
 $router->match('/admin/users/activate/{id}', 'Admin_Home::activateUser', ['POST', 'GET']);
 

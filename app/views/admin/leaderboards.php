@@ -98,20 +98,75 @@ include APP_DIR . 'views/templates/header.php';
 
             <!-- Dashboard Content -->
             <div class="p-4 md:p-6">
-                <div class="mb-8 grid gap-4 grid-cols-4">
-                    <!-- Active Users Card -->
-                    <div class="col-span-4 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 p-6 text-white shadow-sm">
-                        <div class="flex items-center gap-2">
-                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                            </svg>
-                            <h3 class="font-medium">Leaderboards</h3>
+                <div class="mb-8 grid grid-cols-4 gap-4">
+                    <!-- total -->
+                    <?php
+                    if (isset($topPlayer) && is_array($topPlayer)) {
+                        $points = isset($topPlayer['points']) ? $topPlayer['points'] : 'No Data';
+                        $name = isset($topPlayer['name']) ? $topPlayer['name'] : 'Unknown';
+                    } else {
+                        $points = 'No Data';
+                        $name = 'Unknown';
+                    }
+                    ?>
+                    <div class="col-span-2 flex justify-between rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 p-6 text-white shadow-md">
+                        <div class="flex flex-col justify-center font-bold text-2xl">
+                            Top Player
+                            <span class="text-base text-gray-300 ">
+                                Total points: <span class="text-white font-bold">
+
+                                    <?= htmlspecialchars($points) ?>
+                                </span>
+                            </span>
                         </div>
+
                         <!-- users data -->
-                        <p class="mt-4 text-3xl font-bold">2,543</p>
-                        <p class="text-purple-100">Increased by 15%</p>
+                        <div class=" flex justify-center items-center">
+                            <p class="text-4xl font-bold">
+                                <?= htmlspecialchars($name) ?>
+                            </p>
+
+                        </div>
+                    </div>
+
+                    <!-- approval -->
+                    <?php
+                    if (isset($topWeeklyPlayer) && is_array($topWeeklyPlayer)) {
+                        $weeklyPoints = isset($topWeeklyPlayer['points']) ? $topWeeklyPlayer['points'] : 'No Data';
+                        $weeklyName = isset($topWeeklyPlayer['name']) ? $topWeeklyPlayer['name'] : 'Unknown';
+                    } else {
+                        $weeklyPoints = 'No Data';
+                        $weeklyName = 'Unknown';
+                    }
+                    ?>
+                    <div class="col-span-2 flex justify-between rounded-lg bg-gradient-to-br from-orange-500 to-orange-600 p-6 text-white shadow-md">
+                        <div class="flex flex-col justify-center font-bold text-2xl">
+                            Top Weekly Player
+                            <span class="text-base text-gray-300 ">
+                                Total points: <span class="text-white font-bold">
+
+                                    <?= htmlspecialchars($weeklyPoints) ?>
+
+                                </span>
+                            </span>
+                        </div>
+
+                        <!-- users data -->
+                        <div class=" flex flex-col justify-center items-center">
+                            <p class="text-4xl font-bold">
+                                <?= htmlspecialchars($weeklyName) ?>
+
+                            </p>
+                        </div>
                     </div>
                 </div>
+
+                <?php include APP_DIR . 'views/templates/adminLeaderboardTemplates/totalPoints.php' ?>
+
+
+                <?php include APP_DIR . 'views/templates/adminLeaderboardTemplates/weeklyPoints.php' ?>
+
+
             </div>
         </main>
     </div>

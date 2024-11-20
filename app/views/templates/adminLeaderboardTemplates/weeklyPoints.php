@@ -1,48 +1,48 @@
 <div class=" relative overflow-x-auto shadow-md sm:rounded-lg bg-white mb-8 w-full">
     <div class="border-b p-4">
-        <h2 class="text-lg font-medium">Pending Quizzes</h2>
+        <h2 class="text-lg font-medium">Top Weekly Players</h2>
     </div>
     <table id="quizApproval" class="w-full text-sm text-left rtl:text-right text-gray-500">
         <thead class="text-xs text-white uppercase bg-orange-500">
             <tr>
                 <th scope="col" class="px-6 py-3">
-                    Quiz Title
+                    Rank
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    Category
-                </th>
-
-                <th scope="col" class="px-6 py-3">
-                    Type
+                    Name
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    Action
+                    Total Points
                 </th>
             </tr>
         </thead>
         <tbody>
-            <?php if (!empty($forApprovalQuiz)): ?>
-                <?php foreach ($forApprovalQuiz as $quiz): ?>
+            <?php if (!empty($weeklyPlayers)): ?>
+                <?php foreach ($weeklyPlayers as $index => $points): ?>
                     <tr class="border-b">
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                            <?php echo $quiz['title'] ?>
+                            <?php echo $index + 1 ?>
                         </th>
                         <td class="px-6 py-4">
-                            <?php echo $quiz['name'] ?>
+                            <?php echo $points['name'] ?>
                         </td>
+
                         <td class="px-6 py-4">
-                            <?php echo $quiz['quizType'] ?>
+                            <?php if ($points['points'] === null) {
+                                echo $points['points'] = 0 . ' pts';
+                            } else {
+                                echo $points['points'] . ' pts';
+                            }
+
+                            ?>
                         </td>
-                        <td class="px-6 py-4 space-x-2">
-                            <a href="<?= site_url('admin/quizzes/reject/' . $quiz['quiz_id']) ?>" class="font-medium text-red-600 hover:text-red-700">Reject</a>
-                            <a href="<?= site_url('admin/quizzes/approve/' . $quiz['quiz_id']) ?>" class="font-medium text-green-600 hover:text-green-700">Approve</a>
-                        </td>
+
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>
                 <tr>
                     <td colspan="6" class="px-6 py-4 text-center text-gray-500">
-                        No pending quizzes
+                        No player record
                     </td>
                 </tr>
             <?php endif; ?>

@@ -179,7 +179,7 @@ include APP_DIR . 'views/templates/header.php';
                     </button>
                 </div>
                 <!-- Modal body -->
-                <form action="<?= site_url('admin/quizzes/add-category') ?>"  method="post">
+                <form action="<?= site_url('admin/quizzes/add-category') ?>" method="post">
                     <div class="flex flex-col gap-3">
                         <div>
                             <label for="category" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Category</label>
