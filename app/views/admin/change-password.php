@@ -51,14 +51,14 @@ include APP_DIR . 'views/templates/header.php';
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                         </svg>
-                        Leaderboard
+                        Leaderboards
                     </a>
-                    <a href="<?= site_url('admin/settings'); ?>" class="flex items-center gap-2 rounded-lg px-3 py-2 text-gray-600 hover:bg-gray-100">
+                    <a href="<?= site_url('admin/change-password'); ?>" class="flex items-center gap-2 rounded-lg px-3 py-2 text-white bg-blue-500">
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                         </svg>
-                        Settings
+                        Change password
                     </a>
                 </nav>
                 <div class="border-t p-4">
@@ -74,32 +74,11 @@ include APP_DIR . 'views/templates/header.php';
 
         <!-- Main Content -->
         <main class="flex-1 md:ml-64">
-            <!-- Header -->
-            <header class="flex h-14 items-center justify-between border-b bg-white px-4">
-                <div class="flex items-center gap-2">
-                    <button id="sidebarToggle" class="md:hidden">
-                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                        </svg>
-                    </button>
-                    <div class="relative">
-                        <svg class="absolute left-2 top-2 h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
-                        <input type="text" class="w-full rounded-md border border-gray-300 pl-8 pr-4 py-2 focus:border-blue-500 focus:ring-blue-500 sm:w-64" placeholder="Search...">
-                    </div>
-                </div>
-                <div class="flex items-center gap-4">
-                    <div class="relative inline-block h-8 w-8 rounded-full bg-gray-200">
-                        <img src="/placeholder-user.jpg" alt="User Avatar" class="h-full w-full rounded-full object-cover">
-                    </div>
-                </div>
-            </header>
 
             <!-- Dashboard Content -->
             <div class="p-4 md:p-6">
-                <div class="mb-8 grid gap-4 grid-cols-4">
-                    <!-- Active Users Card -->
+
+                <!-- <div class="mb-8 grid gap-4 grid-cols-4">
                     <div class="col-span-4 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 p-6 text-white shadow-sm">
                         <div class="flex items-center gap-2">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -107,11 +86,37 @@ include APP_DIR . 'views/templates/header.php';
                             </svg>
                             <h3 class="font-medium">Settings</h3>
                         </div>
-                        <!-- users data -->
                         <p class="mt-4 text-3xl font-bold">2,543</p>
                         <p class="text-purple-100">Increased by 15%</p>
                     </div>
+                </div> -->
+                <div class="p-8 rounded-lg bg-white shadow-md">
+                    <div class=" mb-8">
+                        <h2 class="text-2xl font-bold text-gray-900">Admin password</h2>
+                        <p class="mt-2 text-sm text-gray-500">Modify admin password.</p>
+                    </div>
+
+                    <form action="<?= site_url('admin/change-password') ?>" method="post">
+                        <div class="mb-4">
+                            <label for="currentPass" class="block text-gray-700 text-sm font-bold mb-2">Current password</label>
+                            <input id="currentPass" type="password" class="block w-full px-3 py-2 border rounded-lg border-gray-300" name="currentPass" minlength="8" required autocomplete="current-password">
+                        </div>
+                        <div class="mb-4">
+                            <label for="newPass" class="block text-gray-700 text-sm font-bold mb-2">New password</label>
+                            <input id="newPass" type="password" class="block w-full px-3 py-2 border rounded-lg border-gray-300" name="newPass" minlength="8" required autocomplete="current-password">
+                        </div>
+                        <div class="mb-4">
+                            <label for="confPass" class="block text-gray-700 text-sm font-bold mb-2">Confirm password</label>
+                            <input id="confPass" type="password" class="block w-full px-3 py-2 border rounded-lg border-gray-300" name="confPass" minlength="8" required autocomplete="current-password">
+                        </div>
+
+
+                        <button type="submit" class="focus:outline-none text-white bg-blue-500 hover:bg-blue-600 transition-all ease-in-out rounded-lg shadow-md px-6 py-2 text-center">
+                            Change password
+                        </button>
+                    </form>
                 </div>
+
             </div>
         </main>
     </div>

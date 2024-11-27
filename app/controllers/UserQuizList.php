@@ -21,6 +21,9 @@ class UserQuizList extends Controller
       ->select('q.*, c.name as category_name, 
           IFNULL(COUNT(qu.question_id), 0) as question_count, 
           IFNULL(SUM(qu.points), 0) as total_points')
+      ->where('is_published', 1)
+      ->where('is_rejected', 0)
+      ->where('is_archived', 0)
       ->group_by('q.quiz_id')
       ->get_all();
 
@@ -41,7 +44,10 @@ class UserQuizList extends Controller
         'q.*, c.name as category_name, 
         IFNULL(COUNT(qu.question_id), 0) as question_count, 
         IFNULL(SUM(qu.points), 0) as total_points'
-      );
+      )
+      ->where('is_published', 1)
+      ->where('is_rejected', 0)
+      ->where('is_archived', 0);
 
     if ($category) {
       $query->where('q.categoryId', $category);

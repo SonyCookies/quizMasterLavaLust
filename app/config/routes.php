@@ -119,7 +119,6 @@ $router->get('/admin/dashboard', 'Admin_Home::dashboard');
 
 // users
 $router->get('/admin/users', 'Admin_Home::users');
-$router->get('/admin/users/{id}', 'Admin_Home::viewUser');
 $router->match('/admin/users/deactivate/{id}', 'Admin_Home::deactivateUser', ['POST', 'GET']);
 $router->match('/admin/users/activate/{id}', 'Admin_Home::activateUser', ['POST', 'GET']);
 
@@ -134,6 +133,8 @@ $router->match('/admin/quizzes/publish/{id}', 'Admin_Home::publishQuiz', ['POST'
 // add category
 $router->match('/admin/quizzes/add-category', 'Admin_Home::addCategory', ['POST', 'GET']);
 
-
+// leaderboards
 $router->get('/admin/leaderboards', 'Admin_Home::leaderboards');
-$router->get('/admin/settings', 'Admin_Home::settings');
+
+// change password admin
+$router->match('/admin/change-password', 'Admin_Home::changePass', ['POST', 'GET']);
