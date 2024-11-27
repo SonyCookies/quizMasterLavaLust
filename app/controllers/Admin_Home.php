@@ -13,10 +13,15 @@ class Admin_Home extends Controller
         }
     }
 
-    // dashboard
-    public function dashboard()
+
+    public function generateReports()
     {
+
         $totalUser = $this->db->table('users')->select_count('is_deactivated', 'active')->where(['is_admin' => 0, 'is_deactivated' => 0])->get();
+        $totalDeactivatedUser = $this->db->table('users')->select_count('is_deactivated', 'deactivated')->where(['is_admin' => 0, 'is_deactivated' => 1])->get();
+
+        $averagePoints = $this->db->table('user_scores')->select('AVG(score) as avePoints')->get();
+        $averageAccuracy = $this->db->table('user_scores')->select('AVG(percentage) as aveAccuracy')->get();
 
         $totalQuizzes = $this->db->table('quizzes')
             ->select_count('is_published', 'totalQuizzes')
@@ -30,18 +35,129 @@ class Admin_Home extends Controller
             ->where('u.is_deactivated', 0)
             ->where('u.is_admin', 0)
             ->order_by('points', 'DESC')
-            ->limit(1)
+            ->limit(3)
+            ->get();
+
+
+        $allUser = $this->db->table('users')->where(['is_admin' => 0, 'is_deactivated' => 0])->order_by('created_at', 'DESC')->get_all();
+
+        $allQuizzes = $this->db->table('quizzes as q')
+            ->left_join('categories as c', 'q.categoryId = c.category_id')
+            ->select('c.name as category_name, COUNT(*) as total, q.title as title, q.quizType as quizType, quiz_id')
+            ->where(['q.is_published' => 1, 'q.is_archived' => 0])
+            ->group_by('c.name')
+            ->order_by('total', 'DESC')
+            ->get_all();
+
+        $totalPointsPlayers = $this->db->table('users as u')
+            ->left_join('user_scores as us', 'u.id=us.user_id')
+            ->select('u.username as name, SUM(us.score) as points, AVG(us.percentage)  as accuracy')
+            ->where('u.is_deactivated', 0)
+            ->where('u.is_admin', 0)
+            ->group_by('u.id')
+            ->order_by('points', 'DESC')
+            ->get_all();
+
+
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="quizmaster_full_report.csv"');
+
+        $output = fopen('php://output', 'w');
+
+        // summary
+        fputcsv($output, ['Report Summary']);
+        fputcsv($output, ['Total Users', $totalUser['active']]);
+        fputcsv($output, ['Deactivated Users', $totalDeactivatedUser['deactivated']]);
+        fputcsv($output, ['Total Quizzes', $totalQuizzes['totalQuizzes']]);
+        fputcsv($output, ['Average Points per Quiz', number_format($averagePoints['avePoints'], 2)]);
+        fputcsv($output, ['Average Accuracy per Quiz', number_format($averageAccuracy['aveAccuracy'], 2) . '%']);
+        fputcsv($output, []); 
+
+        // top player
+        fputcsv($output, ['Top Players']);
+        fputcsv($output, ['Username', 'Total Points', 'Average Accuracy']);
+        foreach ($topPlayer as $player) {
+            fputcsv($output, [
+                $player['name'],
+                $player['points'] ? $player['points'] : 0,
+                number_format($player['accuracy'], 2) . '%',
+            ]);
+        }
+        fputcsv($output, []); 
+
+        fputcsv($output, ['Leaderboard Rankings']);
+        fputcsv($output, ['Rank', 'Username', 'Total Points', 'Accuracy']);
+        foreach ($totalPointsPlayers as $index => $entry) {
+            fputcsv($output, [
+                $index + 1,
+                $entry['name'],
+                $entry['points'] ? $entry['points'] : 0,
+                number_format($entry['accuracy'], 2) . '%',
+            ]);
+        }
+
+        fputcsv($output, ['Users']);
+        fputcsv($output, ['Username', 'Email', 'Date Created']);
+        foreach ($allUser as $user) {
+            $date = date_create($user['created_at']);
+            fputcsv($output, [
+                $user['username'],
+                $user['email'],
+                date_format($date, "F j, Y"),
+            ]);
+        }
+        fputcsv($output, []); 
+
+        fputcsv($output, ['Quizzes']);
+        fputcsv($output, ['Quiz Title', 'Category', 'Type']);
+        foreach ($allQuizzes as $quiz) {
+            fputcsv($output, [
+                $quiz['title'],
+                $quiz['category_name'],
+                $quiz['quizType'],
+            ]);
+        }
+        fputcsv($output, []); 
+
+
+        // Close the output stream
+        fclose($output);
+        exit;
+    }
+
+    // dashboard
+    public function dashboard()
+    {
+        $totalUser = $this->db->table('users')->select_count('is_deactivated', 'active')->where(['is_admin' => 0, 'is_deactivated' => 0])->get();
+        $totalDeactivatedUser = $this->db->table('users')->select_count('is_deactivated', 'deactivated')->where(['is_admin' => 0, 'is_deactivated' => 1])->get();
+
+        $averagePoints = $this->db->table('user_scores')->select('AVG(score) as avePoints')->get();
+        $averageAccuracy = $this->db->table('user_scores')->select('AVG(percentage) as aveAccuracy')->get();
+
+        $totalQuizzes = $this->db->table('quizzes')
+            ->select_count('is_published', 'totalQuizzes')
+            ->where('is_published', 1)
+            ->get();
+
+        $topPlayer = $this->db->table('users as u')
+            ->left_join('user_scores as us', 'u.id=us.user_id')
+            ->group_by('u.id')
+            ->select('u.username as name, SUM(us.score) as points')
+            ->where('u.is_deactivated', 0)
+            ->where('u.is_admin', 0)
+            ->order_by('points', 'DESC')
+            ->limit(3)
             ->get();
 
 
         $allUser = $this->db->table('users')->where(['is_admin' => 0, 'is_deactivated' => 0])->order_by('created_at', 'DESC')->limit(5)->get_all();
 
         $allQuizzes = $this->db->table('quizzes as q')
-            // ->select('quizzes.title', 'categories.name', 'quizzes.quizType', 'quizzes.isTimed')
             ->left_join('categories as c', 'q.categoryId = c.category_id')
-            ->where(['is_published' => 1, 'is_archived' => 0])
-            ->order_by('q.created_at', 'DESC')
-            ->limit(5)
+            ->select('c.name as category_name, COUNT(*) as total, q.title as title, q.quizType as quizType, quiz_id')
+            ->where(['q.is_published' => 1, 'q.is_archived' => 0])
+            ->group_by('c.name')
+            ->order_by('total', 'DESC')
             ->get_all();
 
         $totalPointsPlayers = $this->db->table('users as u')
@@ -59,11 +175,13 @@ class Admin_Home extends Controller
 
         $data = array(
             'totalUser' => $totalUser,
+            'totalDeactivatedUser' => $totalDeactivatedUser,
             'totalQuizzes' => $totalQuizzes,
             'topPlayer' => $topPlayer,
-
+            'averagePoints' =>  $averagePoints,
             'allUser' => $allUser,
             'allQuizzes' => $allQuizzes,
+            'averageAccuracy' => $averageAccuracy,
             'totalPointsPlayers' => $totalPointsPlayers,
 
         );

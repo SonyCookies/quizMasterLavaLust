@@ -139,3 +139,5 @@ $router->get('/admin/leaderboards', 'Admin_Home::leaderboards');
 
 // change password admin
 $router->match('/admin/change-password', 'Admin_Home::changePass', ['POST', 'GET']);
+
+$router->get('/admin/generate-reports', 'Admin_Home::generateReports');

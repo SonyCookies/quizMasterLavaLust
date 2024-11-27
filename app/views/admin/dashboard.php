@@ -76,35 +76,50 @@ include APP_DIR . 'views/templates/header.php';
         <main class="flex-1 md:ml-64">
             <!-- Dashboard Content -->
             <div class="p-4 md:p-6">
-                <div class="mb-8 grid gap-4 md:grid-cols-2 lg:grid-cols-6">
+                <div class="flex items-center text-center justify-between mb-6">
+                    <div class="text-3xl font-bold text-blue-500">QuizMaster</div>
+                    <a href="<?= site_url('/admin/generate-reports') ?>" class="focus:outline-none bg-blue-500 hover:bg-blue-600 text-white transition-all ease-in-out rounded-lg shadow-md px-6 py-2 text-center">
+                        Generate Reports
+                    </a>
+                </div>
 
+                <div class="mb-8 grid gap-4 grid-cols-6 ">
                     <!-- users -->
-                    <div class="col-span-2 flex justify-between rounded-lg bg-gradient-to-br from-purple-500 to-purple-700 p-6 text-white shadow-md">
-                        <div class="flex flex-col  justify-center gap- font-bold text-2xl">
-                            Total Users
-                            <span class="text-base text-gray-200 font-normal">List of all users from QuizMaster</span>
-                        </div>
+                    <div class="col-span-3 flex flex-col bg-white  rounded-lg overflow-hidden  text-white shadow-md">
+                        <div class="flex justify-between p-6 bg-gradient-to-br from-purple-500 to-purple-700">
+                            <div class="flex flex-col  justify-center gap- font-bold text-2xl">
+                                Total Users
+                                <span class="text-base text-gray-200 font-normal">List of all users from QuizMaster</span>
+                            </div>
 
-                        <!-- users data -->
-                        <div class=" flex items-center">
-                            <p class="text-6xl font-bold"><?php echo $totalUser['active'] ?></p>
+                            <!-- users data -->
+                            <div class=" flex items-center">
+                                <p class="text-6xl font-bold"><?php echo $totalUser['active'] ?></p>
+                            </div>
+                        </div>
+                        <div class="p-6 place-contents-center place-items-center">
+                            <canvas id="userChart"></canvas>
+
                         </div>
                     </div>
 
                     <!-- all quiz -->
-                    <div class="col-span-2 flex justify-between rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 p-6 text-white shadow-md">
-                        <div class="flex flex-col  justify-center gap- font-bold text-2xl">
-                            Total Quizzes
-                            <span class="text-sm text-gray-200 font-normal">List of all quizzes from QuizMaster</span>
-                        </div>
+                    <div class="col-span-3 rounded-lg bg-white overflow-hidden text-white shadow-md">
+                        <div class="flex justify-between bg-gradient-to-br from-blue-500 to-blue-700 p-6">
+                            <div class="flex flex-col  justify-center gap- font-bold text-2xl">
+                                Total Quizzes
+                                <span class="text-sm text-gray-200 font-normal">List of all quizzes from QuizMaster</span>
+                            </div>
 
-                        <!-- users data -->
-                        <div class=" flex items-center">
-                            <p class="text-6xl font-bold"><?php echo $totalQuizzes['totalQuizzes'] ?></p>
+                            <!-- users data -->
+                            <div class=" flex items-center">
+                                <p class="text-6xl font-bold"><?php echo $totalQuizzes['totalQuizzes'] ?></p>
+                            </div>
+                        </div>
+                        <div class="p-6 place-contents-center place-items-center">
+                            <canvas id="quizCategoryChart"></canvas>
                         </div>
                     </div>
-
-
 
                     <!-- leaderboard -->
                     <?php
@@ -116,28 +131,74 @@ include APP_DIR . 'views/templates/header.php';
                         $name = 'Unknown';
                     }
                     ?>
-                    <div class="col-span-2 flex justify-between rounded-lg bg-gradient-to-br from-orange-500 to-orange-700 p-6 text-white shadow-md">
-                        <div class="flex flex-col justify-center font-bold text-2xl">
-                            Top Player
-                            <span class="text-base font-normal text-gray-200 ">
-                                Player with overall most points
-                            </span>
-                        </div>
-
-                        <!-- users data -->
-                        <div class=" flex flex-col justify-center items-center">
-                            <p class="text-3xl font-bold">
-                                <?= htmlspecialchars($name) ?>
-                            </p>
-                            <span class="text-base text-gray-200 ">
-                                Total points: <span class="text-white font-bold">
-
-                                    <?= htmlspecialchars($points) ?>
+                    <div class="col-span-2 overflow-hidden rounded-lg bg-white text-white shadow-md">
+                        <div class="flex justify-between  bg-gradient-to-br from-orange-500 to-orange-700 p-6">
+                            <div class="flex flex-col justify-center font-bold text-2xl">
+                                Top Player
+                                <span class="text-base font-normal text-gray-200 ">
+                                    Player with overall most points
                                 </span>
-                            </span>
+                            </div>
+
+                            <!-- users data -->
+                            <div class=" flex flex-col justify-center items-center">
+                                <p class="text-2xl font-bold">
+                                    <?= htmlspecialchars($name) ?>
+                                </p>
+                                <span class="text-sm text-gray-200 ">
+                                    Total points: <span class="text-white font-bold">
+
+                                        <?= htmlspecialchars($points) ?>
+                                    </span>
+                                </span>
+
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <canvas id="topPlayersChart"></canvas>
 
                         </div>
                     </div>
+
+                    <!-- avergae points -->
+                    <div class="col-span-2 rounded-lg bg-white overflow-hidden text-white shadow-md">
+                        <div class="flex justify-between bg-gradient-to-br from-green-500 to-green-700 p-6">
+                            <div class="flex flex-col  justify-center gap- font-bold text-2xl">
+                                Average Points
+                                <span class="text-sm text-gray-200 font-normal">Average points per quiz</span>
+                            </div>
+
+                            <!-- users data -->
+                            <div class=" flex items-center">
+                                <p class="text-4xl font-bold"><?php echo number_format($averagePoints['avePoints'], 2) . '%'; ?>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="p-6 ">
+                            <canvas id="avePoints"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- average accuracy -->
+                    <div class="col-span-2 rounded-lg bg-white overflow-hidden text-dark shadow-md">
+                        <div class="flex justify-between bg-gradient-to-br from-yellow-300 to-yellow-400 p-6">
+                            <div class="flex flex-col  justify-center gap- font-bold text-2xl">
+                                Average Accuracy
+                                <span class="text-sm text-gray-700 font-normal">Average accuracy per quiz</span>
+                            </div>
+
+                            <!-- users data -->
+                            <div class=" flex items-center">
+                                <p class="text-4xl font-bold"><?php echo number_format($averageAccuracy['aveAccuracy'], 2) . '%'; ?>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="p-6 ">
+                            <canvas id="aveAccuracy"></canvas>
+                        </div>
+                    </div>
+
+
                 </div>
 
                 <!-- Recent Users Table -->
@@ -164,7 +225,6 @@ include APP_DIR . 'views/templates/header.php';
                             </tr>
                         </thead>
                         <tbody>
-
                             <?php foreach ($allUser as $user): ?>
                                 <tr class="border-b">
                                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
@@ -230,7 +290,7 @@ include APP_DIR . 'views/templates/header.php';
                                         <?php echo $quiz['title'] ?>
                                     </th>
                                     <td class="px-6 py-4">
-                                        <?php echo $quiz['name'] ?>
+                                        <?php echo $quiz['category_name'] ?>
                                     </td>
 
                                     <td class="px-6 py-4">
@@ -326,6 +386,135 @@ include APP_DIR . 'views/templates/header.php';
             closeSidebar.addEventListener('click', function() {
                 sidebar.classList.remove('open');
             });
+        });
+
+
+        // Total Users Chart
+        const userChartCtx = document.getElementById('userChart').getContext('2d');
+        const userChart = new Chart(userChartCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Active Users', 'Deactivated Users'],
+                datasets: [{
+                    data: [<?php echo $totalUser['active'] ?>, <?php echo $totalDeactivatedUser['deactivated'] ?>], // Replace second value with deactivated count if needed
+                    backgroundColor: ['#a855f7', '#f97316'],
+                }]
+            }
+        });
+
+        document.getElementById('userChart').style.height = '300px';
+        document.getElementById('userChart').style.width = '100%';
+
+        // Quiz Category Chart
+        const quizCategoryCtx = document.getElementById('quizCategoryChart').getContext('2d');
+        const quizCategoryLabels = [<?php foreach ($allQuizzes as $quiz) {
+                                        echo "'{$quiz['category_name']}',";
+                                    } ?>];
+        const quizCategoryData = [<?php foreach ($allQuizzes as $quiz) {
+                                        echo "'{$quiz['total']}',";
+                                    } ?>]; // Example data: adjust for actual category counts
+        const quizCategoryChart = new Chart(quizCategoryCtx, {
+            type: 'doughnut',
+            data: {
+                labels: quizCategoryLabels,
+                datasets: [{
+                    data: quizCategoryData,
+                    backgroundColor: ['#FFC107', '#2196F3', '#FF5722', '#4CAF50'],
+                }]
+            }
+        });
+
+        document.getElementById('quizCategoryChart').style.height = '300px';
+        document.getElementById('quizCategoryChart').style.width = '100%';
+
+        // Top Players Chart
+        const topPlayersCtx = document.getElementById('topPlayersChart').getContext('2d');
+        const topPlayersLabels = [<?php foreach ($totalPointsPlayers as $player) {
+                                        echo "'{$player['name']}',";
+                                    } ?>];
+        const topPlayersData = [<?php foreach ($totalPointsPlayers as $player) {
+                                    echo "{$player['points']},";
+                                } ?>];
+        const topPlayersChart = new Chart(topPlayersCtx, {
+            type: 'bar',
+            data: {
+                labels: topPlayersLabels,
+                datasets: [{
+                    label: 'Points',
+                    data: topPlayersData,
+                    backgroundColor: '#f97316',
+                }]
+            }
+        });
+
+        document.getElementById('topPlayersChart').style.height = '400px';
+        document.getElementById('topPlayersChart').style.width = '100%';
+
+        // average points
+        const avePointsCtx = document.getElementById('avePoints').getContext('2d');
+        const avePointsChart = new Chart(avePointsCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Average Points'], // Can include other categories or quizzes if needed
+                datasets: [{
+                    label: 'Average Points per Quiz',
+                    data: [<?php echo number_format($averagePoints['avePoints'], 2); ?>], // Average value
+                    backgroundColor: ['#4CAF50'],
+                    borderColor: ['#388E3C'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => `${context.raw} Points`
+                        }
+                    }
+                }
+            }
+        });
+
+
+        // average accuracy
+        const aveAccuracyCtx = document.getElementById('aveAccuracy').getContext('2d');
+        const aveAccuracyChart = new Chart(aveAccuracyCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Average Accuracy'], // Can include other categories or quizzes if needed
+                datasets: [{
+                    label: 'Average Accuracy per Quiz',
+                    data: [<?php echo number_format($averageAccuracy['aveAccuracy'], 2); ?>], // Average value
+                    backgroundColor: ['#facc15'],
+                    borderColor: ['#facc15'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => `${context.raw} Points`
+                        }
+                    }
+                }
+            }
         });
     </script>
 </body>
