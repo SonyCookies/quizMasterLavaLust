@@ -15,7 +15,7 @@ include APP_DIR . 'views/templates/header.php';
     }
 </style>
 
-<body class="min-h-screen bg-gray-50/90">
+<body class="min-h-screen bg-gray-50">
     <div class="flex">
         <!-- Sidebar -->
         <aside id="sidebar" class="sidebar fixed left-0 top-0 z-40 h-screen w-64 border-r bg-white transition-transform duration-300 ease-in-out md:translate-x-0">
@@ -47,18 +47,18 @@ include APP_DIR . 'views/templates/header.php';
                         </svg>
                         Quizzes
                     </a>
-                    <a href="<?= site_url('admin/leaderboards'); ?>" class="flex items-center gap-2 rounded-lg px-3 py-2 text-gray-600 hover:bg-gray-100">
+                    <a href="<?= site_url('admin/leaderboards'); ?>" class="flex items-center gap-2 rounded-lg px-3 py-2 text-white bg-blue-500">
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                         </svg>
-                        Leaderboard
+                        Leaderboards
                     </a>
-                    <a href="<?= site_url('admin/settings'); ?>" class="flex items-center gap-2 rounded-lg px-3 py-2 text-gray-600 hover:bg-gray-100">
+                    <a href="<?= site_url('admin/change-password'); ?>" class="flex items-center gap-2 rounded-lg px-3 py-2 text-gray-600 hover:bg-gray-100">
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                         </svg>
-                        Settings
+                        Change password
                     </a>
                 </nav>
                 <div class="border-t p-4">
@@ -74,27 +74,7 @@ include APP_DIR . 'views/templates/header.php';
 
         <!-- Main Content -->
         <main class="flex-1 md:ml-64">
-            <!-- Header -->
-            <header class="flex h-14 items-center justify-between border-b bg-white px-4">
-                <div class="flex items-center gap-2">
-                    <button id="sidebarToggle" class="md:hidden">
-                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                        </svg>
-                    </button>
-                    <div class="relative">
-                        <svg class="absolute left-2 top-2 h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
-                        <input type="text" class="w-full rounded-md border border-gray-300 pl-8 pr-4 py-2 focus:border-blue-500 focus:ring-blue-500 sm:w-64" placeholder="Search...">
-                    </div>
-                </div>
-                <div class="flex items-center gap-4">
-                    <div class="relative inline-block h-8 w-8 rounded-full bg-gray-200">
-                        <img src="/placeholder-user.jpg" alt="User Avatar" class="h-full w-full rounded-full object-cover">
-                    </div>
-                </div>
-            </header>
+
 
             <!-- Dashboard Content -->
             <div class="p-4 md:p-6">
@@ -109,22 +89,25 @@ include APP_DIR . 'views/templates/header.php';
                         $name = 'Unknown';
                     }
                     ?>
-                    <div class="col-span-2 flex justify-between rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 p-6 text-white shadow-md">
+                    <div class="col-span-2 flex justify-between rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 p-6 text-white shadow-md">
                         <div class="flex flex-col justify-center font-bold text-2xl">
                             Top Player
-                            <span class="text-base text-gray-300 ">
+                            <span class="text-base font-normal text-gray-200 ">
+                                Player with overall most points
+                            </span>
+                        </div>
+
+                        <!-- users data -->
+                        <div class=" flex flex-col justify-center items-center">
+                            <p class="text-3xl font-bold">
+                                <?= htmlspecialchars($name) ?>
+                            </p>
+                            <span class="text-base text-gray-200 ">
                                 Total points: <span class="text-white font-bold">
 
                                     <?= htmlspecialchars($points) ?>
                                 </span>
                             </span>
-                        </div>
-
-                        <!-- users data -->
-                        <div class=" flex justify-center items-center">
-                            <p class="text-4xl font-bold">
-                                <?= htmlspecialchars($name) ?>
-                            </p>
 
                         </div>
                     </div>
@@ -139,24 +122,24 @@ include APP_DIR . 'views/templates/header.php';
                         $weeklyName = 'Unknown';
                     }
                     ?>
-                    <div class="col-span-2 flex justify-between rounded-lg bg-gradient-to-br from-orange-500 to-orange-600 p-6 text-white shadow-md">
+                    <div class="col-span-2 flex justify-between rounded-lg bg-gradient-to-br from-purple-500 to-purple-700 p-6 text-white shadow-md">
                         <div class="flex flex-col justify-center font-bold text-2xl">
                             Top Weekly Player
-                            <span class="text-base text-gray-300 ">
-                                Total points: <span class="text-white font-bold">
-
-                                    <?= htmlspecialchars($weeklyPoints) ?>
-
-                                </span>
+                            <span class="text-base font-normal text-gray-200 ">
+                                Player with most points this week
                             </span>
                         </div>
 
                         <!-- users data -->
                         <div class=" flex flex-col justify-center items-center">
-                            <p class="text-4xl font-bold">
+                            <p class="text-3xl font-bold">
                                 <?= htmlspecialchars($weeklyName) ?>
-
                             </p>
+                            <span class="text-base text-gray-200 ">
+                                Total points: <span class="text-white font-bold">
+                                    <?= htmlspecialchars($weeklyPoints) ?>
+                                </span>
+                            </span>
                         </div>
                     </div>
                 </div>
