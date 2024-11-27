@@ -45,7 +45,7 @@ include APP_DIR . 'views/templates/header.php';
               <?php endif; ?>
             </div>
             <div class="mt-8 text-center">
-              <a href="/leaderboards/full-weekly" class="inline-block px-8 py-3 bg-white text-blue-600 font-bold rounded-full shadow-md hover:bg-blue-100 transition duration-300 ease-in-out transform hover:-translate-y-1">
+              <a href="/leaderboard/full-weekly" class="inline-block px-8 py-3 bg-white text-blue-600 font-bold rounded-full shadow-md hover:bg-blue-100 transition duration-300 ease-in-out transform hover:-translate-y-1">
                 View Full Weekly Ranking
               </a>
             </div>

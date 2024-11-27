@@ -20,23 +20,23 @@ include APP_DIR . 'views/templates/header.php';
               <div class="flex mb-2 items-center justify-between">
                 <div class="text-white">
                   <span id="stepIndicator" class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full bg-white text-quiz-blue">
-                    Step <span id="currentStepNumber">1</span> of 3
+                    Step <span id="currentStepNumber">1</span> of 2
                   </span>
                 </div>
               </div>
               <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-white/30">
-                <div id="progressBar" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-white" style="width: 33%"></div>
+                <div id="progressBar" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-white" style="width: 50%"></div>
               </div>
             </div>
 
             <!-- Step 1: Enter Quiz Title -->
-            <div id="step-1" class="step">
+            <div id="step-1" class="step ">
               <label for="quizTitle" class="block text-white text-lg font-medium mb-2">What's your quiz called?</label>
               <input type="text" id="quizTitle" name="title" class="w-full p-3 bg-white/20 border border-white/30 rounded-lg text-white text-xl placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white" placeholder="Enter an engaging title" required>
             </div>
 
             <!-- Step 2: Select Quiz Type, Difficulty, and Category -->
-            <div id="step-2" class="step hidden space-y-4">
+            <div id="step-2" class="step space-y-4 hidden">
               <div>
                 <label for="quizType" class="block text-white text-lg font-medium mb-2">What type of quiz is this?</label>
                 <select id="quizType" name="quizType" class="w-full p-3 bg-white/20 border border-white/30 rounded-lg text-white text-xl focus:outline-none focus:ring-2 focus:ring-white" required>
@@ -59,24 +59,6 @@ include APP_DIR . 'views/templates/header.php';
                 </select>
               </div>
 
-            </div>
-
-            <!-- Step 3: Quiz Settings -->
-            <div id="step-3" class="step hidden space-y-4">
-              <h4 class="text-white text-xl font-semibold mb-4">Fine-tune your quiz</h4>
-              <div class="flex items-center space-x-3 bg-white/20 p-4 rounded-lg">
-                <input
-                  type="hidden"
-                  name="isTimed"
-                  value="0" />
-                <input
-                  type="checkbox"
-                  id="timedCheck"
-                  name="isTimed"
-                  value="1"
-                  class="form-checkbox h-5 w-5 text-quiz-blue rounded focus:ring-quiz-light" />
-                <label for="timedCheck" class="text-white text-xl">Set a time limit for your quiz</label>
-              </div>
             </div>
 
             <!-- Navigation Buttons -->
@@ -108,7 +90,7 @@ include APP_DIR . 'views/templates/header.php';
 
   <script>
     let currentStep = 1;
-    const totalSteps = 3;
+    const totalSteps = 2;  // Updated to reflect 2 steps now
 
     function updateProgressBar() {
       const progress = (currentStep / totalSteps) * 100;
@@ -156,6 +138,7 @@ include APP_DIR . 'views/templates/header.php';
       }
       return true;
     }
+
     $(document).ready(function() {
       $('#nextBtn').on('click', nextStep);
       $('#prevBtn').on('click', prevStep);

@@ -19,7 +19,6 @@ include APP_DIR . 'views/templates/header.php';
               <h5 class="text-lg font-semibold">Quiz Type: <span class="font-normal"><?= htmlspecialchars($quiz['quizType']) ?></span></h5>
             </div>
             <div>
-              <h5 class="text-lg font-semibold">Timed: <span class="font-normal"><?= htmlspecialchars($quiz['isTimed'] ? 'Yes' : 'No') ?></span></h5>
               <h5 class="text-lg font-semibold">Total Points: <span class="font-normal"><?= htmlspecialchars($totalPoints ? $totalPoints : 0) ?></span></h5>
             </div>
           </div>

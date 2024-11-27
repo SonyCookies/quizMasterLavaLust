@@ -101,6 +101,7 @@ $router->get('/leaderboards/filter', 'UserLeaderboards::filter_quizzes');
 $router->get('/leaderboards/full-points', 'UserLeaderboards::full_points');
 $router->get('/leaderboards/full-accuracy', 'UserLeaderboards::full_accuracy');
 $router->get('/leaderboards/full/{$quiz_id}', 'UserLeaderboards::quiz_leaderboard');
+$router->get('/leaderboard/full-weekly', 'UserLeaderboards::weekly_leaderboard');
 
 
 

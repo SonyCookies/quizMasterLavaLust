@@ -40,7 +40,6 @@
                             </button>
                             <ul class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden group-hover:block z-50">
                                 <li><a href="<?= site_url('profile'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a></li>
-                                <li><a href="<?= site_url('settings'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a></li>
                                 <li>
                                     <hr class="my-1 border-gray-200">
                                 </li>

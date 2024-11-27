@@ -25,7 +25,7 @@ include APP_DIR . 'views/templates/header.php';
             <select name="category" class="appearance-none bg-white/20 text-white border-2 border-white/30 rounded-full px-6 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent">
               <option value="">All Categories</option>
               <?php foreach ($categories as $category): ?>
-                <option value="<?= htmlspecialchars($category['category_id']) ?>"
+                <option class="text-black" value="<?= htmlspecialchars($category['category_id']) ?>"
                   <?= isset($_GET['category']) && $_GET['category'] == $category['category_id'] ? 'selected' : '' ?>>
                   <?= htmlspecialchars($category['name']) ?>
                 </option>
@@ -40,10 +40,10 @@ include APP_DIR . 'views/templates/header.php';
 
           <div class="relative">
             <select name="type" class="appearance-none bg-white/20 text-white border-2 border-white/30 rounded-full px-6 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent">
-              <option value="">All Types</option>
-              <option value="multiple-choice" <?= isset($_GET['type']) && $_GET['type'] == 'multiple-choice' ? 'selected' : '' ?>>Multiple Choice</option>
-              <option value="identification" <?= isset($_GET['type']) && $_GET['type'] == 'identification' ? 'selected' : '' ?>>Identification</option>
-              <option value="true-false" <?= isset($_GET['type']) && $_GET['type'] == 'true-false' ? 'selected' : '' ?>>True/False</option>
+              <option class="text-black" value="">All Types</option>
+              <option class="text-black" value="multiple-choice" <?= isset($_GET['type']) && $_GET['type'] == 'multiple-choice' ? 'selected' : '' ?>>Multiple Choice</option>
+              <option class="text-black" value="identification" <?= isset($_GET['type']) && $_GET['type'] == 'identification' ? 'selected' : '' ?>>Identification</option>
+              <option class="text-black" value="true-false" <?= isset($_GET['type']) && $_GET['type'] == 'true-false' ? 'selected' : '' ?>>True/False</option>
             </select>
             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-white">
               <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -52,7 +52,7 @@ include APP_DIR . 'views/templates/header.php';
             </div>
           </div>
 
-          <button type="submit" class="bg-white text-quiz-blue font-bold py-3 px-8 rounded-full hover:bg-quiz-blue hover:text-white transition duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-1">
+          <button type="submit" class="bg-white text-quiz-blue font-bold py-3 px-8 rounded-full transition duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-1">
             Filter Quizzes
           </button>
         </div>
@@ -84,7 +84,7 @@ include APP_DIR . 'views/templates/header.php';
                   </span>
                 </div>
                 <a href="<?= site_url('quiz/take/' . $quiz['quizType'] . '/' . $quiz['quiz_id']) ?>"
-                  class="bg-white text-quiz-blue font-bold py-3 px-6 rounded-full inline-block hover:bg-quiz-blue hover:text-white hover:shadow-lg transform hover:-translate-y-1 transition duration-300 ease-in-out text-center">
+                  class="bg-white text-quiz-blue font-bold py-3 px-6 rounded-full inline-block hover:shadow-lg transform hover:-translate-y-1 transition duration-300 ease-in-out text-center">
                   Take the Challenge
                 </a>
               </div>

@@ -128,7 +128,7 @@ class UserLeaderboards extends Controller
     $data = [
       'topPoints' => $topUsers,
       'weeklyRanking' => $weeklyRanking,
-      'topAccuracy' => array_slice($userTotalAccuracy, 0, 5),  // Top 5 users
+      'topAccuracy' => array_slice($userTotalAccuracy, 0, 5),  
       'categories' => $categories,
       'quizzes' => $quizzes,
     ];
@@ -361,5 +361,30 @@ class UserLeaderboards extends Controller
 
     // Render the leaderboard view
     $this->call->view('/users/quiz-leaderboards', $data);
+  }
+
+  public function weekly_leaderboard() {
+
+    $weeklyRanking = $this->db->table('leaderboards')
+      ->select('user_id, SUM(score) AS weekly_points')
+      ->where('ranking_date', '>=', date('Y-m-d 00:00:00', strtotime('monday this week')))
+      ->where('ranking_date', '<=', date('Y-m-d 23:59:59', strtotime('sunday this week')))
+      ->group_by('user_id')
+      ->order_by('weekly_points', 'DESC')
+      ->get_all();
+
+    foreach ($weeklyRanking as &$entry) {
+      $user = $this->db->table('users')
+        ->select('username')
+        ->where('id', $entry['user_id'])
+        ->get();
+      $entry['username'] = $user['username'] ?? 'Unknown';
+    }
+
+    $data = [
+      'weeklyRanking' => $weeklyRanking,
+    ];
+
+    $this->call->view('/users/weekly-leaderboards', $data);
   }
 }

@@ -39,6 +39,9 @@ class User_Home extends Controller
         $averageScoreValue = ($averageScore['average_score'] === NULL) ? 0 : number_format($averageScore['average_score'], 2);
         $quizzes = $this->db->table('quizzes')
             ->where('is_published', 1)
+            ->where('is_published', 1)
+            ->where('is_rejected', 0)
+            ->where('is_archived', 0)
             ->order_by('RAND()')
             ->limit(3)
             ->get_all();

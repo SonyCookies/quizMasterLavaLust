@@ -70,7 +70,7 @@ foreach ($chartData as $score) {
         </div>
 
         <!-- Leaderboard and Achievements -->
-        <div class="grid md:grid-cols-2 gap-6">
+        <!-- <div class="grid md:grid-cols-2 gap-6">
           <div class="bg-white/10 backdrop-filter backdrop-blur-lg rounded-xl overflow-hidden shadow-xl">
             <div class="p-8">
               <h3 class="text-2xl font-semibold text-white mb-6">Global Leaderboard</h3>
@@ -118,7 +118,7 @@ foreach ($chartData as $score) {
               <a href="#" class="mt-6 text-blue-300 hover:text-white transition duration-300 inline-block">View All Achievements</a>
             </div>
           </div>
-        </div>
+        </div> -->
 
         <!-- User Scores and Statistics -->
         <div class="grid md:grid-cols-2 gap-6">
