@@ -77,19 +77,6 @@ include APP_DIR . 'views/templates/header.php';
 
             <!-- Dashboard Content -->
             <div class="p-4 md:p-6">
-
-                <!-- <div class="mb-8 grid gap-4 grid-cols-4">
-                    <div class="col-span-4 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 p-6 text-white shadow-sm">
-                        <div class="flex items-center gap-2">
-                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                            </svg>
-                            <h3 class="font-medium">Settings</h3>
-                        </div>
-                        <p class="mt-4 text-3xl font-bold">2,543</p>
-                        <p class="text-purple-100">Increased by 15%</p>
-                    </div>
-                </div> -->
                 <div class="p-8 rounded-lg bg-white shadow-md">
                     <div class=" mb-8">
                         <h2 class="text-2xl font-bold text-gray-900">Admin password</h2>

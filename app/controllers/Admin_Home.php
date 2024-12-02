@@ -16,12 +16,23 @@ class Admin_Home extends Controller
 
     public function generateReports()
     {
+        $totalUser = $this->db->table('users')
+            ->select_count('is_deactivated', 'active')
+            ->where(['is_admin' => 0, 'is_deactivated' => 0])
+            ->get();
 
-        $totalUser = $this->db->table('users')->select_count('is_deactivated', 'active')->where(['is_admin' => 0, 'is_deactivated' => 0])->get();
-        $totalDeactivatedUser = $this->db->table('users')->select_count('is_deactivated', 'deactivated')->where(['is_admin' => 0, 'is_deactivated' => 1])->get();
+        $totalDeactivatedUser = $this->db->table('users')
+            ->select_count('is_deactivated', 'deactivated')
+            ->where(['is_admin' => 0, 'is_deactivated' => 1])
+            ->get();
 
-        $averagePoints = $this->db->table('user_scores')->select('AVG(score) as avePoints')->get();
-        $averageAccuracy = $this->db->table('user_scores')->select('AVG(percentage) as aveAccuracy')->get();
+        $averagePoints = $this->db->table('user_scores')
+            ->select('AVG(score) as avePoints')
+            ->get();
+
+        $averageAccuracy = $this->db->table('user_scores')
+            ->select('AVG(percentage) as aveAccuracy')
+            ->get();
 
         $totalQuizzes = $this->db->table('quizzes')
             ->select_count('is_published', 'totalQuizzes')
@@ -31,15 +42,16 @@ class Admin_Home extends Controller
         $topPlayer = $this->db->table('users as u')
             ->left_join('user_scores as us', 'u.id=us.user_id')
             ->group_by('u.id')
-            ->select('u.username as name, SUM(us.score) as points')
+            ->select('u.username as name, SUM(us.score) as points, AVG(us.percentage) as accuracy')
             ->where('u.is_deactivated', 0)
             ->where('u.is_admin', 0)
             ->order_by('points', 'DESC')
-            ->limit(3)
             ->get();
 
-
-        $allUser = $this->db->table('users')->where(['is_admin' => 0, 'is_deactivated' => 0])->order_by('created_at', 'DESC')->get_all();
+        $allUser = $this->db->table('users')
+            ->where(['is_admin' => 0, 'is_deactivated' => 0])
+            ->order_by('created_at', 'DESC')
+            ->get_all();
 
         $allQuizzes = $this->db->table('quizzes as q')
             ->left_join('categories as c', 'q.categoryId = c.category_id')
@@ -51,79 +63,75 @@ class Admin_Home extends Controller
 
         $totalPointsPlayers = $this->db->table('users as u')
             ->left_join('user_scores as us', 'u.id=us.user_id')
-            ->select('u.username as name, SUM(us.score) as points, AVG(us.percentage)  as accuracy')
+            ->select('u.username as name, SUM(us.score) as points, AVG(us.percentage) as accuracy')
             ->where('u.is_deactivated', 0)
             ->where('u.is_admin', 0)
             ->group_by('u.id')
             ->order_by('points', 'DESC')
             ->get_all();
 
+        // Prepare text content
+        $report = "QuizMaster Report\n";
+        $report .= "=================\n\n";
+        $report .= "Report Summary\n";
+        $report .= "---------------\n";
+        $report .= "Total Users: {$totalUser['active']}\n";
+        $report .= "Deactivated Users: {$totalDeactivatedUser['deactivated']}\n";
+        $report .= "Total Quizzes: {$totalQuizzes['totalQuizzes']}\n";
+        $report .= "Average Points per Quiz: " . number_format($averagePoints['avePoints'], 2) . "\n";
+        $report .= "Average Accuracy per Quiz: " . number_format($averageAccuracy['aveAccuracy'], 2) . "%\n\n";
 
-        header('Content-Type: text/csv; charset=utf-8');
-        header('Content-Disposition: attachment; filename="quizmaster_full_report.csv"');
-
-        $output = fopen('php://output', 'w');
-
-        // summary
-        fputcsv($output, ['Report Summary']);
-        fputcsv($output, ['Total Users', $totalUser['active']]);
-        fputcsv($output, ['Deactivated Users', $totalDeactivatedUser['deactivated']]);
-        fputcsv($output, ['Total Quizzes', $totalQuizzes['totalQuizzes']]);
-        fputcsv($output, ['Average Points per Quiz', number_format($averagePoints['avePoints'], 2)]);
-        fputcsv($output, ['Average Accuracy per Quiz', number_format($averageAccuracy['aveAccuracy'], 2) . '%']);
-        fputcsv($output, []); 
-
-        // top player
-        fputcsv($output, ['Top Players']);
-        fputcsv($output, ['Username', 'Total Points', 'Average Accuracy']);
-        foreach ($topPlayer as $player) {
-            fputcsv($output, [
-                $player['name'],
-                $player['points'] ? $player['points'] : 0,
-                number_format($player['accuracy'], 2) . '%',
-            ]);
+        // Add top player
+        $report .= "Top Player\n";
+        $report .= "-----------\n";
+        if ($topPlayer) {
+            $report .= "Username: {$topPlayer['name']}\n";
+            $report .= "Total Points: {$topPlayer['points']}\n";
+            $report .= "Average Accuracy: " . number_format($topPlayer['accuracy'], 2) . "%\n";
+        } else {
+            $report .= "No top player data available.\n";
         }
-        fputcsv($output, []); 
+        $report .= "\n";
 
-        fputcsv($output, ['Leaderboard Rankings']);
-        fputcsv($output, ['Rank', 'Username', 'Total Points', 'Accuracy']);
+        // Add leaderboard
+        $report .= "Leaderboard Rankings\n";
+        $report .= "---------------------\n";
         foreach ($totalPointsPlayers as $index => $entry) {
-            fputcsv($output, [
-                $index + 1,
-                $entry['name'],
-                $entry['points'] ? $entry['points'] : 0,
-                number_format($entry['accuracy'], 2) . '%',
-            ]);
+            $report .= ($index + 1) . ". {$entry['name']} - Points: {$entry['points']}, Accuracy: " . number_format($entry['accuracy'], 2) . "%\n";
         }
+        $report .= "\n";
 
-        fputcsv($output, ['Users']);
-        fputcsv($output, ['Username', 'Email', 'Date Created']);
+        // Add users
+        $report .= "Users\n";
+        $report .= "------\n";
         foreach ($allUser as $user) {
             $date = date_create($user['created_at']);
-            fputcsv($output, [
-                $user['username'],
-                $user['email'],
-                date_format($date, "F j, Y"),
-            ]);
+            $report .= "{$user['username']} ({$user['email']}), Created: " . date_format($date, "F j, Y") . "\n";
         }
-        fputcsv($output, []); 
+        $report .= "\n";
 
-        fputcsv($output, ['Quizzes']);
-        fputcsv($output, ['Quiz Title', 'Category', 'Type']);
+        // Add quizzes
+        $report .= "Quizzes\n";
+        $report .= "--------\n";
         foreach ($allQuizzes as $quiz) {
-            fputcsv($output, [
-                $quiz['title'],
-                $quiz['category_name'],
-                $quiz['quizType'],
-            ]);
+            $report .= "{$quiz['title']} - Category: {$quiz['category_name']}, Type: {$quiz['quizType']}\n";
         }
-        fputcsv($output, []); 
+        $report .= "\n";
 
+        // Save the content to a text file
+        $fileName = 'quizmaster_report.txt';
+        file_put_contents($fileName, $report);
 
-        // Close the output stream
-        fclose($output);
+        // Output file for download
+        header('Content-Type: text/plain');
+        header("Content-Disposition: attachment; filename=\"$fileName\"");
+        readfile($fileName);
+
+        // Delete the file after download
+        unlink($fileName);
         exit;
     }
+
 
     // dashboard
     public function dashboard()
@@ -427,16 +435,16 @@ class Admin_Home extends Controller
                     if ($updateAdminPassword) {
                         redirect('auth/logout');
                     } else {
-                        echo 'Failed to update password';
+                        redirect('/admin/change-password');
                     }
                 } else {
-                    echo 'passwords do not match';
+                    redirect('/admin/change-password');
                 }
             } else {
-                echo 'Current password do not match';
+                redirect('/admin/change-password');
             }
         }
 
-        $this->call->view('/admin/change-password.php');
+        $this->call->view('/admin/change-password');
     }
 }

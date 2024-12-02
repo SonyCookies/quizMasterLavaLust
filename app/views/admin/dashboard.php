@@ -170,7 +170,7 @@ include APP_DIR . 'views/templates/header.php';
 
                             <!-- users data -->
                             <div class=" flex items-center">
-                                <p class="text-4xl font-bold"><?php echo number_format($averagePoints['avePoints'], 2) . '%'; ?>
+                                <p class="text-4xl font-bold"><?php echo number_format($averagePoints['avePoints'], 2); ?>
                                 </p>
                             </div>
                         </div>
