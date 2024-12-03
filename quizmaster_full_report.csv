@@ -1,0 +1,25 @@
+"Report Summary"
+"Total Users",3
+"Deactivated Users",0
+"Total Quizzes",6
+"Average Points per Quiz",1.67
+"Average Accuracy per Quiz",80.56%
+
+"Leaderboard Rankings"
+Rank,Username,"Total Points",Accuracy
+1,johnnySins,10,83.33%
+2,johnDoe,4,100.00%
+3,malaria,3,50.00%
+Users
+Username,Email,"Date Created"
+johnnySins,johnnysins@gmail.com,"November 24, 2024"
+johnDoe,johndoe@gmail.com,"November 15, 2024"
+malaria,odin4805@gmail.com,"November 13, 2024"
+
+Quizzes
+"Quiz Title",Category,Type
+"TEST 3",Math,identification
+"Test 1",Science,identification
+"TEST 4",Technology,identification
+"TEST 2",Literature,multiple-choice
+
